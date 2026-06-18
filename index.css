@@ -1,0 +1,27 @@
+body {
+  background-color: rgba(59, 59, 59, 0.46);
+}
+
+.productos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.producto {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 150px;
+  border-radius: 10px;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.producto h3 {
+  margin: 5px 0;
+}
+
+.producto p {
+  color: green;
+  font-weight: bold;
+}
