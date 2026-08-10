@@ -1,36 +1,136 @@
 <!DOCTYPE html>
+
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Almacen Lucila</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kiosco Lucila</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
-    <h2>Productos</h2>
+    <header>
+      <h1>Kiosco Lucila</h1>
+    </header>
+    <nav class="menu-fijo">
+      <button class="boton-menu">☰</button>
 
-    <div class="filtros">
-      <button onclick="filtrar('todos')">Todos</button>
-      <button onclick="filtrar('bebidas')">Bebidas</button>
-      <button onclick="filtrar('snacks')">Snacks</button>
-      <button onclick="filtrar('lacteos')">Lácteos</button>
-    </div>
+      <ul class="lista-menu">
+        <li><a href="#comidas">Comidas</a></li>
+        <li><a href="#bebidas">Bebidas</a></li>
+        <li><a href="#limpieza">Limpieza</a></li>
+        <li><a href="#dulces">Dulces</a></li>
+        <li><a href="#otros">Otros</a></li>
+      </ul>
+    </nav>
+    <main>
+      <section id="comidas">
+        <h2>Comidas</h2>
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img
+              src="imagenes/Ravioles-La-Morocha.webp"
+              alt="Ravioles la Morocha"
+            />
+            <h3>Ravioles la Morocha</h3>
+            <p>$500</p>
+          </div>
 
-    <div class="contenedor-productos">
-      <div class="producto bebidas">
-        <h3>Gaseosa</h3>
-        <p>$1200</p>
-      </div>
+          <div class="producto">
+            <img src="imagenes/Tomate-Triturado.webp" alt="Tomate Triturado" />
+            <h3>Tomate Triturado</h3>
+            <p>$700</p>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h2>Bebidas</h2>
 
-      <div class="producto snacks">
-        <h3>Galletitas</h3>
-        <p>$900</p>
-      </div>
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img src="imagenes/Vino-Elementos.webp" alt="Vino Elementos" />
+            <h3>Vino Elementos</h3>
+            <p>$1500</p>
+          </div>
 
-      <div class="producto lacteos">
-        <h3>Leche</h3>
-        <p>$800</p>
-      </div>
-    </div>
+          <div class="producto">
+            <img src="imagenes/Vino-Benjamin.webp" alt="Vino Benjamín" />
+            <h3>Vino Benjamín</h3>
+            <p>$1200</p>
+          </div>
+
+          <div class="producto">
+            <img src="imagenes/Vino-Circus.webp" alt="Vino Circus" />
+            <h3>Vino Circus</h3>
+            <p>$1200</p>
+          </div>
+
+          <div class="producto">
+            <img src="imagenes/Vino-Benjamin.webp" alt="Vino Benjamín" />
+            <h3>Vino Benjamín</h3>
+            <p>$1200</p>
+          </div>
+        </div>
+      </section>
+      <section id="limpieza">
+        <h2>Limpieza</h2>
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img src="https://via.placeholder.com/150" />
+            <h3>Lavandina</h3>
+            <p>$900</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="dulces">
+        <h2>Dulces</h2>
+
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img
+              src="imagenes/Cobertura-de-Chocolate.webp"
+              alt="Cobertura de Chocolate"
+            />
+            <h3>Cobertura de Chocolate</h3>
+            <p>$500</p>
+          </div>
+
+          <div class="producto">
+            <img src="imagenes/Flan-De-Vainilla.webp" alt="Flan de Vainilla" />
+            <h3>Flan de Vainilla</h3>
+            <p>$500</p>
+          </div>
+
+          <div class="producto">
+            <img src="imagenes/Gelatina.webp" alt="Gelatina" />
+            <h3>Gelatina</h3>
+            <p>$700</p>
+          </div>
+
+          <div class="producto">
+            <img src="otro-dulce2.jpg" alt="Otro dulce" />
+            <h3>Otro dulce</h3>
+            <p>$800</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="otros">
+        <h2>Otros</h2>
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img src="https://via.placeholder.com/150" />
+            <h3>Velas</h3>
+            <p>$500</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp" target="_blank">
+      WhatsApp
+    </a>
+    <script src="script.js"></script>
   </body>
 </html>
