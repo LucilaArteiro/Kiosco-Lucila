@@ -81,29 +81,34 @@ const productos = {
     nombre: 'Tomate Triturado',
     precio: '$1900',
     imagen: 'imagenes/Tomate-Triturado.webp'
-  }
+  },
+
   7790580131487: {
-    nombre: 'cobertura de chocolate',
+    nombre: 'Cobertura de Chocolate',
     precio: '$1900',
-    imagen: 'imagenes/cobertura-de-chocolate.webp'
-  }
+    imagen: 'imagenes/Cobertura-de-Chocolate.webp'
+  },
+
   7790070413116: {
-    nombre: 'flan-de-vainilla',
+    nombre: 'Flan de Vainilla',
     precio: '$1900',
-    imagen: 'imagenes/flan-de-vainilla.webp'
-  }
+    imagen: 'imagenes/Flan-De-Vainilla.webp'
+  },
+
   7790070432513: {
-    nombre: 'gelatina',
+    nombre: 'Gelatina',
     precio: '$1900',
-    imagen: 'imagenes/gelatina.webp'
-  }
+    imagen: 'imagenes/Gelatina.webp'
+  },
+
   7790070760579: {
-    nombre: 'Vino-Benjamin',
+    nombre: 'Vino Benjamín',
     precio: '$1900',
     imagen: 'imagenes/Vino-Benjamin.webp'
-  }
+  },
+
   7790415129047: {
-    nombre: 'Vino-Circus',
+    nombre: 'Vino Circus',
     precio: '$1900',
     imagen: 'imagenes/Vino-Circus.webp'
   }
