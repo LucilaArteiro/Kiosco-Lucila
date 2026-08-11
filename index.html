@@ -13,15 +13,33 @@
       <h1>Kiosco Lucila</h1>
     </header>
 
-    <div class="escaneo">
-      <button id="btnEscanear">📷 Escanear producto</button>
+    <section class="seccion-escaner">
+      <div class="tarjeta-escaner">
+        <div class="icono-escaner">📷</div>
 
-      <div id="lector" style="display: none">
-        <video id="video" autoplay playsinline></video>
+        <h2>Escaneá tu producto</h2>
+
+        <p class="texto-escaner">
+          Escaneá el código de barras para consultar el producto y su precio.
+        </p>
+
+        <button id="btnEscanear" class="boton-escanear">
+          📷 Escanear producto
+        </button>
+
+        <div id="lector" class="lector" style="display: none">
+          <div class="marco-escaner">
+            <video id="video" autoplay playsinline></video>
+
+            <div class="linea-escaner"></div>
+          </div>
+
+          <p class="instruccion">Apuntá al código de barras</p>
+        </div>
+
+        <div id="resultado" class="resultado"></div>
       </div>
-
-      <p id="resultado"></p>
-    </div>
+    </section>
     <nav class="menu-fijo">
       <button class="boton-menu">☰</button>
 

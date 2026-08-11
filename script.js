@@ -1,3 +1,7 @@
+// ==============================
+// MENÚ
+// ==============================
+
 const boton = document.querySelector('.boton-menu')
 const menu = document.querySelector('.lista-menu')
 
@@ -22,23 +26,28 @@ const codeReader = new ZXing.BrowserMultiFormatReader()
 
 btnEscanear.addEventListener('click', async () => {
   lector.style.display = 'block'
-  resultado.textContent = '📷 Apuntá la cámara al código de barras...'
+
+  resultado.textContent = '📷 Preparando la cámara...'
 
   try {
     const dispositivos = await codeReader.listVideoInputDevices()
 
     if (dispositivos.length === 0) {
       resultado.textContent = '❌ No se encontró ninguna cámara.'
+
       return
     }
 
+    // Elegimos la última cámara disponible
     const camara = dispositivos[dispositivos.length - 1].deviceId
+
+    resultado.textContent = '📷 Apuntá al código de barras...'
 
     codeReader.decodeFromVideoDevice(camara, video, (result, error) => {
       if (result) {
         const codigo = result.text
 
-        resultado.textContent = `✅ Código detectado: ${codigo}`
+        console.log('Código detectado:', codigo)
 
         codeReader.reset()
 
@@ -48,7 +57,9 @@ btnEscanear.addEventListener('click', async () => {
       }
     })
   } catch (error) {
-    console.error(error)
+    console.error('Error de cámara:', error)
+
+    lector.style.display = 'none'
 
     resultado.textContent =
       '❌ No se pudo acceder a la cámara. Revisá los permisos.'
@@ -56,30 +67,102 @@ btnEscanear.addEventListener('click', async () => {
 })
 
 // ==============================
+// PRODUCTOS
+// ==============================
+
+const productos = {
+  7791234567890: {
+    nombre: 'Ravioles La Morocha',
+    precio: '$500',
+    imagen: 'imagenes/Ravioles-La-Morocha.webp'
+  },
+
+  7791627000032: {
+    nombre: 'Tomate Triturado',
+    precio: '$1900',
+    imagen: 'imagenes/Tomate-Triturado.webp'
+  }
+  7790580131487: {
+    nombre: 'cobertura de chocolate',
+    precio: '$1900',
+    imagen: 'imagenes/cobertura-de-chocolate.webp'
+  }
+  7790070413116: {
+    nombre: 'flan-de-vainilla',
+    precio: '$1900',
+    imagen: 'imagenes/flan-de-vainilla.webp'
+  }
+  7790070432513: {
+    nombre: 'gelatina',
+    precio: '$1900',
+    imagen: 'imagenes/gelatina.webp'
+  }
+  7790070760579: {
+    nombre: 'Vino-Benjamin',
+    precio: '$1900',
+    imagen: 'imagenes/Vino-Benjamin.webp'
+  }
+  7790415129047: {
+    nombre: 'Vino-Circus',
+    precio: '$1900',
+    imagen: 'imagenes/Vino-Circus.webp'
+  }
+}
+
+// ==============================
 // BUSCAR PRODUCTO
 // ==============================
 
 function buscarProducto (codigo) {
-  const productos = {
-    7791234567890: {
-      nombre: 'Ravioles La Morocha',
-      precio: '$500'
-    },
-
-    7791627000032: {
-      nombre: 'Tomate Triturado',
-      precio: '$1900'
-    }
-  }
-
   const producto = productos[codigo]
 
   if (producto) {
     resultado.innerHTML = `
-      <strong>🛒 ${producto.nombre}</strong><br>
-      Precio: ${producto.precio}
+
+      <div class="producto-encontrado">
+
+        <img
+          src="${producto.imagen}"
+          alt="${producto.nombre}"
+        >
+
+        <h3>🛒 ${producto.nombre}</h3>
+
+        <span class="precio">
+          ${producto.precio}
+        </span>
+
+        <button
+          class="boton-otro-escaneo"
+          onclick="location.reload()"
+        >
+          📷 Escanear otro producto
+        </button>
+
+      </div>
+
     `
   } else {
-    resultado.textContent = `❌ No tenemos registrado el producto con código ${codigo}.`
+    resultado.innerHTML = `
+
+      <div class="producto-encontrado">
+
+        <h3>❌ Producto no encontrado</h3>
+
+        <p>
+          No tenemos registrado el código:
+          <strong>${codigo}</strong>
+        </p>
+
+        <button
+          class="boton-otro-escaneo"
+          onclick="location.reload()"
+        >
+          📷 Escanear otro producto
+        </button>
+
+      </div>
+
+    `
   }
 }
