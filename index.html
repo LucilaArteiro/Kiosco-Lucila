@@ -12,6 +12,16 @@
     <header>
       <h1>Kiosco Lucila</h1>
     </header>
+
+    <div class="escaneo">
+      <button id="btnEscanear">📷 Escanear producto</button>
+
+      <div id="lector" style="display: none">
+        <video id="video" autoplay playsinline></video>
+      </div>
+
+      <p id="resultado"></p>
+    </div>
     <nav class="menu-fijo">
       <button class="boton-menu">☰</button>
 
@@ -39,7 +49,7 @@
           <div class="producto">
             <img src="imagenes/Tomate-Triturado.webp" alt="Tomate Triturado" />
             <h3>Tomate Triturado</h3>
-            <p>$700</p>
+            <p>$1900</p>
           </div>
         </div>
       </section>
@@ -131,6 +141,8 @@
     <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp" target="_blank">
       WhatsApp
     </a>
+
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script src="script.js"></script>
   </body>
 </html>
