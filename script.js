@@ -86,6 +86,8 @@ const categoriaProducto = $('categoriaProducto')
 
 const codeReader = new ZXing.BrowserMultiFormatReader()
 
+let escanerActivo = false
+
 // ======================================================
 // PRODUCTOS LOCALES DE RESPALDO
 // ======================================================
@@ -238,6 +240,8 @@ btnModoDueno.addEventListener('click', () => {
 btnCerrarModoDueno.addEventListener('click', () => {
   modoDuenoActivo = false
 
+  detenerEscaner()
+
   panelDueno.style.display = 'none'
 
   btnModoDueno.textContent = '🔐 Modo dueño'
@@ -287,96 +291,173 @@ btnEscanearParaAgregar.addEventListener('click', () => {
 })
 
 // ======================================================
+// DETENER ESCÁNER
+// ======================================================
+
+function detenerEscaner () {
+  try {
+    codeReader.reset()
+  } catch (error) {
+    console.warn('⚠️ No se pudo reiniciar ZXing:', error)
+  }
+
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach(track => {
+      track.stop()
+    })
+
+    video.srcObject = null
+  }
+
+  escanerActivo = false
+
+  lector.style.display = 'none'
+}
+
+// ======================================================
 // INICIAR ESCÁNER
 // ======================================================
 
 async function iniciarEscaner (modo) {
+  // ==================================================
+  // SI YA HAY UN ESCÁNER ACTIVO, DETENERLO
+  // ==================================================
+
+  if (escanerActivo) {
+    detenerEscaner()
+  }
+
   lector.style.display = 'block'
 
-  resultado.textContent = '📷 Preparando la cámara...'
+  resultado.textContent = '📷 Preparando el escáner...'
 
   try {
     // ==================================================
-    // PEDIR CÁMARA TRASERA
+    // ACTIVAR ESCÁNER
     // ==================================================
 
-    const stream = await navigator.mediaDevices.getUserMedia({
+    escanerActivo = true
+
+    // ==================================================
+    // CONFIGURACIÓN DE CÁMARA
+    // ==================================================
+
+    const constraints = {
       video: {
         facingMode: {
           ideal: 'environment'
+        },
+        width: {
+          ideal: 1280
+        },
+        height: {
+          ideal: 720
         }
       },
       audio: false
-    })
+    }
 
     // ==================================================
-    // MOSTRAR CÁMARA
+    // INICIAR ZXING DIRECTAMENTE
     // ==================================================
 
-    video.srcObject = stream
-
-    await video.play()
-
-    resultado.textContent = '📷 Apuntá al código de barras...'
-
-    // ==================================================
-    // INICIAR ZXING
-    // ==================================================
-
-    codeReader.decodeFromVideoElement(video, result => {
-      if (!result) return
-
-      const codigo = result.text.trim()
-
-      console.log('📷 Código detectado:', codigo)
-
+    codeReader.decodeFromConstraints(constraints, video, (result, error) => {
       // ==================================================
-      // DETENER CÁMARA
+      // SI YA SE DETUVO, IGNORAR RESULTADOS
       // ==================================================
 
-      if (video.srcObject) {
-        video.srcObject.getTracks().forEach(track => track.stop())
-
-        video.srcObject = null
-      }
-
-      codeReader.reset()
-
-      lector.style.display = 'none'
-
-      // ==================================================
-      // SI ESTAMOS AGREGANDO PRODUCTO
-      // ==================================================
-
-      if (modo === 'agregar') {
-        codigoProducto.value = codigo
-
-        resultado.textContent = '✅ Código detectado correctamente.'
-
+      if (!escanerActivo) {
         return
       }
 
       // ==================================================
-      // SI ESTAMOS CONSULTANDO PRODUCTO
+      // CÓDIGO DETECTADO
       // ==================================================
 
-      buscarProducto(codigo)
-    })
-  } catch (error) {
-    console.error('❌ Error de cámara:', error)
+      if (result) {
+        const codigo = result.text.trim()
 
-    lector.style.display = 'none'
+        if (!codigo) {
+          return
+        }
+
+        console.log('📷 CÓDIGO DETECTADO:', codigo)
+
+        // ==================================================
+        // EVITAR DOBLE LECTURA
+        // ==================================================
+
+        escanerActivo = false
+
+        // ==================================================
+        // DETENER ZXING
+        // ==================================================
+
+        try {
+          codeReader.reset()
+        } catch (resetError) {
+          console.warn('⚠️ Error reiniciando ZXing:', resetError)
+        }
+
+        // ==================================================
+        // DETENER CÁMARA
+        // ==================================================
+
+        if (video.srcObject) {
+          video.srcObject.getTracks().forEach(track => {
+            track.stop()
+          })
+
+          video.srcObject = null
+        }
+
+        lector.style.display = 'none'
+
+        // ==================================================
+        // MODO AGREGAR PRODUCTO
+        // ==================================================
+
+        if (modo === 'agregar') {
+          codigoProducto.value = codigo
+
+          resultado.textContent = '✅ Código detectado correctamente.'
+
+          console.log('📦 Código colocado en formulario:', codigo)
+
+          return
+        }
+
+        // ==================================================
+        // MODO CATÁLOGO
+        // ==================================================
+
+        buscarProducto(codigo)
+      }
+
+      // ==================================================
+      // LOS ERRORES DE LECTURA NO SE MUESTRAN
+      // ==================================================
+      //
+      // ZXing genera errores mientras intenta encontrar
+      // un código. Eso es completamente normal.
+      //
+    })
+
+    resultado.textContent = '🔍 Apuntá la cámara al código de barras...'
+  } catch (error) {
+    console.error('❌ Error iniciando escáner:', error)
+
+    detenerEscaner()
 
     resultado.innerHTML = `
       <div class="producto-encontrado">
 
         <h3>
-          ❌ No se pudo abrir la cámara
+          ❌ No se pudo iniciar el escáner
         </h3>
 
         <p>
-          Revisá que hayas permitido el acceso
-          a la cámara.
+          Revisá los permisos de la cámara.
         </p>
 
         <p>
@@ -397,6 +478,10 @@ async function buscarProducto (codigo) {
   resultado.innerHTML = '🔎 Buscando producto...'
 
   try {
+    // ==================================================
+    // BUSCAR EN FIREBASE
+    // ==================================================
+
     const referencia = doc(db, 'productos', codigo)
 
     const documento = await getDoc(referencia)
@@ -563,7 +648,7 @@ btnGuardarProducto.addEventListener('click', async () => {
   // CAMPOS OBLIGATORIOS
   // ==================================================
   //
-  // LA IMAGEN NO ES OBLIGATORIA.
+  // La imagen NO es obligatoria.
   //
   // Obligatorios:
   // - Código
@@ -571,7 +656,6 @@ btnGuardarProducto.addEventListener('click', async () => {
   // - Precio
   // - Categoría
   //
-  // La imagen puede quedar vacía.
   // ==================================================
 
   if (!codigo || !nombre || !precio || !categoria) {
@@ -755,6 +839,10 @@ async function mostrarProductosFirebase () {
   `
 
   try {
+    // ==================================================
+    // OBTENER COLECCIÓN
+    // ==================================================
+
     const productosRef = collection(db, 'productos')
 
     const snapshot = await getDocs(productosRef)
