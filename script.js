@@ -19,7 +19,7 @@ import {
 // ======================================================
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBKFXiic9HlwRv_5tQpx8sZ4plg3IfRiqQ',
+  apiKey: 'AIzaSyBKFXiicH9lwRv_5tQpx8sZ4plg3IfRiqQ',
   authDomain: 'kiosco-lucila.firebaseapp.com',
   projectId: 'kiosco-lucila',
   storageBucket: 'kiosco-lucila.firebasestorage.app',
@@ -33,7 +33,6 @@ const firebaseConfig = {
 // ======================================================
 
 const app = initializeApp(firebaseConfig)
-
 const db = getFirestore(app)
 
 console.log('🔥 Firebase conectado correctamente')
@@ -44,7 +43,11 @@ console.log('🔥 Firebase conectado correctamente')
 
 const CONTRASENA_DUENO = '44775546'
 
-let modoDuenoActivo = false
+// ======================================================
+// RECORDAR MODO DUEÑO
+// ======================================================
+
+let modoDuenoActivo = localStorage.getItem('modoDuenoActivo') === 'true'
 
 // ======================================================
 // FUNCIÓN PARA BUSCAR ELEMENTOS HTML
@@ -61,6 +64,9 @@ const panelDueno = $('panelDueno')
 const btnCerrarModoDueno = $('btnCerrarModoDueno')
 
 const btnEscanear = $('btnEscanear')
+const btnConsultarManual = $('btnConsultarManual')
+const codigoConsulta = $('codigoConsulta')
+
 const btnAgregarProducto = $('btnAgregarProducto')
 const btnEscanearParaAgregar = $('btnEscanearParaAgregar')
 const btnGuardarProducto = $('btnGuardarProducto')
@@ -79,6 +85,26 @@ const nombreProducto = $('nombreProducto')
 const precioProducto = $('precioProducto')
 const imagenProducto = $('imagenProducto')
 const categoriaProducto = $('categoriaProducto')
+
+// ======================================================
+// ACTUALIZAR VISUAL DEL MODO DUEÑO
+// ======================================================
+
+function actualizarModoDuenoVisual () {
+  if (modoDuenoActivo) {
+    panelDueno.style.display = 'flex'
+    btnModoDueno.textContent = '🔓 Modo dueño activo'
+  } else {
+    panelDueno.style.display = 'none'
+    btnModoDueno.textContent = '🔐 Modo dueño'
+  }
+}
+
+// ======================================================
+// RESTAURAR MODO DUEÑO AL CARGAR
+// ======================================================
+
+actualizarModoDuenoVisual()
 
 // ======================================================
 // ESCÁNER ZXING
@@ -204,7 +230,6 @@ function guardarProductosPendientes (lista) {
 function comprobarModoDueno () {
   if (!modoDuenoActivo) {
     alert('🔒 Esta función es exclusiva del modo dueño.')
-
     return false
   }
 
@@ -222,15 +247,16 @@ btnModoDueno.addEventListener('click', () => {
 
   if (contrasena !== CONTRASENA_DUENO) {
     alert('❌ Contraseña incorrecta')
-
     return
   }
 
   modoDuenoActivo = true
 
-  panelDueno.style.display = 'flex'
+  localStorage.setItem('modoDuenoActivo', 'true')
 
-  btnModoDueno.textContent = '🔓 Modo dueño activo'
+  actualizarModoDuenoVisual()
+
+  console.log('🔓 Modo dueño activado y guardado.')
 })
 
 // ======================================================
@@ -240,15 +266,17 @@ btnModoDueno.addEventListener('click', () => {
 btnCerrarModoDueno.addEventListener('click', () => {
   modoDuenoActivo = false
 
+  localStorage.removeItem('modoDuenoActivo')
+
   detenerEscaner()
 
-  panelDueno.style.display = 'none'
-
-  btnModoDueno.textContent = '🔐 Modo dueño'
+  actualizarModoDuenoVisual()
 
   formularioProducto.style.display = 'none'
 
   listaProductosGuardados.innerHTML = ''
+
+  console.log('🔒 Modo dueño cerrado manualmente.')
 })
 
 // ======================================================
@@ -260,6 +288,44 @@ document.querySelector('.boton-menu').addEventListener('click', () => {
 
   menu.style.display = menu.style.display === 'block' ? 'none' : 'block'
 })
+
+// ======================================================
+// CONSULTA MANUAL DEL CLIENTE
+// ======================================================
+
+if (btnConsultarManual) {
+  btnConsultarManual.addEventListener('click', () => {
+    const codigo = codigoConsulta.value.trim()
+
+    if (!codigo) {
+      alert('⚠️ Ingresá un código de barras.')
+
+      codigoConsulta.focus()
+
+      return
+    }
+
+    detenerEscaner()
+
+    buscarProducto(codigo)
+  })
+}
+
+// ======================================================
+// ENTER EN CONSULTA MANUAL
+// ======================================================
+
+if (codigoConsulta) {
+  codigoConsulta.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+
+      if (btnConsultarManual) {
+        btnConsultarManual.click()
+      }
+    }
+  })
+}
 
 // ======================================================
 // BOTÓN ESCANEAR
@@ -301,7 +367,7 @@ function detenerEscaner () {
     console.warn('⚠️ No se pudo reiniciar ZXing:', error)
   }
 
-  if (video.srcObject) {
+  if (video && video.srcObject) {
     video.srcObject.getTracks().forEach(track => {
       track.stop()
     })
@@ -311,7 +377,9 @@ function detenerEscaner () {
 
   escanerActivo = false
 
-  lector.style.display = 'none'
+  if (lector) {
+    lector.style.display = 'none'
+  }
 }
 
 // ======================================================
@@ -319,10 +387,6 @@ function detenerEscaner () {
 // ======================================================
 
 async function iniciarEscaner (modo) {
-  // ==================================================
-  // SI YA HAY UN ESCÁNER ACTIVO, DETENERLO
-  // ==================================================
-
   if (escanerActivo) {
     detenerEscaner()
   }
@@ -332,47 +396,30 @@ async function iniciarEscaner (modo) {
   resultado.textContent = '📷 Preparando el escáner...'
 
   try {
-    // ==================================================
-    // ACTIVAR ESCÁNER
-    // ==================================================
-
     escanerActivo = true
-
-    // ==================================================
-    // CONFIGURACIÓN DE CÁMARA
-    // ==================================================
 
     const constraints = {
       video: {
         facingMode: {
           ideal: 'environment'
         },
+
         width: {
           ideal: 1280
         },
+
         height: {
           ideal: 720
         }
       },
+
       audio: false
     }
 
-    // ==================================================
-    // INICIAR ZXING DIRECTAMENTE
-    // ==================================================
-
     codeReader.decodeFromConstraints(constraints, video, (result, error) => {
-      // ==================================================
-      // SI YA SE DETUVO, IGNORAR RESULTADOS
-      // ==================================================
-
       if (!escanerActivo) {
         return
       }
-
-      // ==================================================
-      // CÓDIGO DETECTADO
-      // ==================================================
 
       if (result) {
         const codigo = result.text.trim()
@@ -383,25 +430,13 @@ async function iniciarEscaner (modo) {
 
         console.log('📷 CÓDIGO DETECTADO:', codigo)
 
-        // ==================================================
-        // EVITAR DOBLE LECTURA
-        // ==================================================
-
         escanerActivo = false
-
-        // ==================================================
-        // DETENER ZXING
-        // ==================================================
 
         try {
           codeReader.reset()
         } catch (resetError) {
           console.warn('⚠️ Error reiniciando ZXing:', resetError)
         }
-
-        // ==================================================
-        // DETENER CÁMARA
-        // ==================================================
 
         if (video.srcObject) {
           video.srcObject.getTracks().forEach(track => {
@@ -413,37 +448,27 @@ async function iniciarEscaner (modo) {
 
         lector.style.display = 'none'
 
-        // ==================================================
-        // MODO AGREGAR PRODUCTO
-        // ==================================================
+        // ==========================================
+        // MODO AGREGAR
+        // ==========================================
 
         if (modo === 'agregar') {
           codigoProducto.value = codigo
 
           resultado.textContent = '✅ Código detectado correctamente.'
 
-          console.log('📦 Código colocado en formulario:', codigo)
-
           return
         }
 
-        // ==================================================
-        // MODO CATÁLOGO
-        // ==================================================
+        // ==========================================
+        // MODO CONSULTA
+        // ==========================================
 
         buscarProducto(codigo)
       }
-
-      // ==================================================
-      // LOS ERRORES DE LECTURA NO SE MUESTRAN
-      // ==================================================
-      //
-      // ZXing genera errores mientras intenta encontrar
-      // un código. Eso es completamente normal.
-      //
     })
 
-    resultado.textContent = '🔍 Apuntá la cámara al código de barras...'
+    resultado.textContent = '🔍 Apuntá al código de barras...'
   } catch (error) {
     console.error('❌ Error iniciando escáner:', error)
 
@@ -452,17 +477,10 @@ async function iniciarEscaner (modo) {
     resultado.innerHTML = `
       <div class="producto-encontrado">
 
-        <h3>
-          ❌ No se pudo iniciar el escáner
-        </h3>
+        <h3>❌ No se pudo iniciar</h3>
 
         <p>
           Revisá los permisos de la cámara.
-        </p>
-
-        <p>
-          Si estás usando el celular,
-          asegurate de abrir la página mediante HTTPS.
         </p>
 
       </div>
@@ -475,34 +493,40 @@ async function iniciarEscaner (modo) {
 // ======================================================
 
 async function buscarProducto (codigo) {
-  resultado.innerHTML = '🔎 Buscando producto...'
+  codigo = String(codigo).trim()
+
+  if (!codigo) {
+    return
+  }
+
+  resultado.innerHTML = `
+    <div class="producto-encontrado">
+      🔎 Buscando...
+    </div>
+  `
 
   try {
-    // ==================================================
-    // BUSCAR EN FIREBASE
-    // ==================================================
+    // ================================================
+    // FIREBASE
+    // ================================================
 
     const referencia = doc(db, 'productos', codigo)
 
     const documento = await getDoc(referencia)
 
-    // ==================================================
-    // PRODUCTO EN FIREBASE
-    // ==================================================
-
     if (documento.exists()) {
       const producto = documento.data()
 
-      console.log('🔥 Producto encontrado en Firebase:', producto)
+      console.log('🔥 Producto encontrado:', producto)
 
       mostrarProducto(producto, codigo)
 
       return
     }
 
-    // ==================================================
-    // PRODUCTO LOCAL
-    // ==================================================
+    // ================================================
+    // RESPALDO LOCAL
+    // ================================================
 
     const productoLocal = productos[codigo]
 
@@ -512,17 +536,9 @@ async function buscarProducto (codigo) {
       return
     }
 
-    // ==================================================
-    // NO ENCONTRADO
-    // ==================================================
-
     mostrarProductoNoEncontrado(codigo)
   } catch (error) {
     console.error('❌ Error buscando en Firebase:', error)
-
-    // ==================================================
-    // RESPALDO LOCAL
-    // ==================================================
 
     const productoLocal = productos[codigo]
 
@@ -539,15 +555,12 @@ async function buscarProducto (codigo) {
 // ======================================================
 
 function mostrarProducto (producto, codigo) {
-  // ==================================================
-  // IMAGEN OPCIONAL
-  // ==================================================
-
   const imagenHTML = producto.imagen
     ? `
         <img
           src="${producto.imagen}"
           alt="${producto.nombre}"
+          onerror="this.style.display='none'"
         >
       `
     : ''
@@ -570,23 +583,33 @@ function mostrarProducto (producto, codigo) {
         <strong>${codigo}</strong>
       </p>
 
-      <button
-        class="boton-otro-escaneo"
-        id="btnOtroEscaneo"
-      >
-        📷 Escanear otro producto
-      </button>
+      <div class="acciones-consulta">
+
+        <button
+          class="boton-otro-escaneo"
+          id="btnNuevaConsulta"
+        >
+          🔎 Nueva consulta
+        </button>
+
+      </div>
 
     </div>
   `
 
-  const btnOtroEscaneo = document.getElementById('btnOtroEscaneo')
+  const btnNuevaConsulta = document.getElementById('btnNuevaConsulta')
 
-  btnOtroEscaneo.addEventListener('click', () => {
-    resultado.innerHTML = ''
+  if (btnNuevaConsulta) {
+    btnNuevaConsulta.addEventListener('click', () => {
+      resultado.innerHTML = ''
 
-    iniciarEscaner('catalogo')
-  })
+      if (codigoConsulta) {
+        codigoConsulta.value = ''
+
+        codigoConsulta.focus()
+      }
+    })
+  }
 }
 
 // ======================================================
@@ -602,25 +625,33 @@ function mostrarProductoNoEncontrado (codigo) {
       </h3>
 
       <p>
-        No tenemos registrado el código:
+        No tenemos registrado:
         <strong>${codigo}</strong>
       </p>
 
       <button
         class="boton-otro-escaneo"
-        id="btnOtroEscaneo"
+        id="btnNuevaConsulta"
       >
-        📷 Escanear otro producto
+        🔎 Nueva consulta
       </button>
 
     </div>
   `
 
-  document.getElementById('btnOtroEscaneo').addEventListener('click', () => {
-    resultado.innerHTML = ''
+  const btnNuevaConsulta = document.getElementById('btnNuevaConsulta')
 
-    iniciarEscaner('catalogo')
-  })
+  if (btnNuevaConsulta) {
+    btnNuevaConsulta.addEventListener('click', () => {
+      resultado.innerHTML = ''
+
+      if (codigoConsulta) {
+        codigoConsulta.value = ''
+
+        codigoConsulta.focus()
+      }
+    })
+  }
 }
 
 // ======================================================
@@ -629,10 +660,6 @@ function mostrarProductoNoEncontrado (codigo) {
 
 btnGuardarProducto.addEventListener('click', async () => {
   if (!comprobarModoDueno()) return
-
-  // ==================================================
-  // OBTENER DATOS
-  // ==================================================
 
   const codigo = codigoProducto.value.trim()
 
@@ -644,29 +671,15 @@ btnGuardarProducto.addEventListener('click', async () => {
 
   const categoria = categoriaProducto.value
 
-  // ==================================================
-  // CAMPOS OBLIGATORIOS
-  // ==================================================
-  //
-  // La imagen NO es obligatoria.
-  //
-  // Obligatorios:
-  // - Código
-  // - Nombre
-  // - Precio
-  // - Categoría
-  //
-  // ==================================================
-
   if (!codigo || !nombre || !precio || !categoria) {
     alert('⚠️ Completá código, nombre, precio y categoría.')
 
     return
   }
 
-  // ==================================================
-  // CREAR RUTA DE IMAGEN
-  // ==================================================
+  // ================================================
+  // RUTA DE IMAGEN
+  // ================================================
 
   let rutaImagen = ''
 
@@ -678,9 +691,9 @@ btnGuardarProducto.addEventListener('click', async () => {
     }
   }
 
-  // ==================================================
-  // CREAR PRODUCTO
-  // ==================================================
+  // ================================================
+  // PRODUCTO
+  // ================================================
 
   const producto = {
     nombre: nombre,
@@ -692,19 +705,15 @@ btnGuardarProducto.addEventListener('click', async () => {
   console.log('📦 Producto que se va a guardar:', producto)
 
   try {
-    resultado.innerHTML = '💾 Guardando producto en Firebase...'
-
-    // ==================================================
-    // GUARDAR EN FIREBASE
-    // ==================================================
+    resultado.innerHTML = '💾 Guardando producto...'
 
     await setDoc(doc(db, 'productos', codigo), producto)
 
-    console.log('🔥 Producto guardado:', codigo, producto)
+    console.log('🔥 Producto guardado:', codigo)
 
-    // ==================================================
+    // ==============================================
     // RESPALDO LOCAL
-    // ==================================================
+    // ==============================================
 
     const lista = obtenerProductosPendientes().filter(
       productoGuardado => productoGuardado.codigo !== codigo
@@ -717,76 +726,47 @@ btnGuardarProducto.addEventListener('click', async () => {
 
     guardarProductosPendientes(lista)
 
-    // ==================================================
+    // ==============================================
     // CONFIRMACIÓN
-    // ==================================================
+    // ==============================================
 
     resultado.innerHTML = `
         <div class="producto-encontrado">
 
-          <h3>
-            ✅ Producto guardado
-          </h3>
+          <h3>✅ Producto guardado</h3>
 
-          <p>
-            <strong>
-              ${nombre}
-            </strong>
-          </p>
+          <strong>
+            ${nombre}
+          </strong>
 
           <p>
             💰 ${precio}
           </p>
 
           <p>
-            📦 Categoría:
-            ${categoria}
+            📦 ${categoria}
           </p>
 
           <p>
-            🔢 Código:
-            ${codigo}
+            🔢 ${codigo}
           </p>
 
-          ${
-            imagen
-              ? `
-                <p>
-                  🖼️ Imagen:
-                  ${imagen}
-                </p>
-              `
-              : `
-                <p>
-                  🖼️ Sin imagen por ahora
-                </p>
-              `
-          }
-
           <p>
-            🔥 Guardado correctamente en Firebase.
+            🔥 Firebase actualizado
           </p>
 
         </div>
       `
 
-    // ==================================================
+    // ==============================================
     // LIMPIAR FORMULARIO
-    // ==================================================
+    // ==============================================
 
     codigoProducto.value = ''
-
     nombreProducto.value = ''
-
     precioProducto.value = ''
-
     imagenProducto.value = ''
-
     categoriaProducto.value = ''
-
-    // ==================================================
-    // ACTUALIZAR LISTA
-    // ==================================================
 
     await mostrarProductosFirebase()
   } catch (error) {
@@ -795,17 +775,10 @@ btnGuardarProducto.addEventListener('click', async () => {
     resultado.innerHTML = `
         <div class="producto-encontrado">
 
-          <h3>
-            ❌ Error al guardar
-          </h3>
+          <h3>❌ Error al guardar</h3>
 
           <p>
-            No se pudo guardar el producto
-            en Firebase.
-          </p>
-
-          <p>
-            Revisá la consola del navegador.
+            No se pudo guardar el producto.
           </p>
 
         </div>
@@ -830,44 +803,24 @@ btnVerProductos.addEventListener('click', async () => {
 async function mostrarProductosFirebase () {
   listaProductosGuardados.innerHTML = `
     <div class="producto-encontrado">
-
-      <h3>
-        🔎 Cargando productos...
-      </h3>
-
+      🔎 Cargando productos...
     </div>
   `
 
   try {
-    // ==================================================
-    // OBTENER COLECCIÓN
-    // ==================================================
-
     const productosRef = collection(db, 'productos')
 
     const snapshot = await getDocs(productosRef)
 
-    // ==================================================
-    // NO HAY PRODUCTOS
-    // ==================================================
-
     if (snapshot.empty) {
       listaProductosGuardados.innerHTML = `
         <div class="producto-encontrado">
-
-          <h3>
-            📦 No hay productos guardados
-          </h3>
-
+          <h3>📦 No hay productos</h3>
         </div>
       `
 
       return
     }
-
-    // ==================================================
-    // CREAR LISTA
-    // ==================================================
 
     const lista = snapshot.docs.map(documento => ({
       codigo: documento.id,
@@ -875,10 +828,6 @@ async function mostrarProductosFirebase () {
     }))
 
     console.log('🔥 Productos de Firebase:', lista)
-
-    // ==================================================
-    // MOSTRAR PRODUCTOS
-    // ==================================================
 
     listaProductosGuardados.innerHTML = `
       <div class="producto-encontrado">
@@ -889,42 +838,36 @@ async function mostrarProductosFirebase () {
 
         <p>
           Total:
-          <strong>
-            ${lista.length}
-          </strong>
+          <strong>${lista.length}</strong>
         </p>
 
         ${lista
           .map(producto => {
-            // ==========================================
-            // IMAGEN OPCIONAL
-            // ==========================================
-
             const imagenHTML = producto.imagen
               ? `
                   <img
                     src="${producto.imagen}"
                     alt="${producto.nombre}"
                     style="
-                      width: 80px;
-                      height: 80px;
-                      object-fit: contain;
-                      display: block;
-                      margin-bottom: 10px;
+                      width:80px;
+                      height:80px;
+                      object-fit:contain;
+                      display:block;
+                      margin:0 auto 8px;
                     "
                   >
                 `
               : `
                   <div
                     style="
-                      width: 80px;
-                      height: 80px;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      background: #f2f2f2;
-                      margin-bottom: 10px;
-                      border-radius: 8px;
+                      width:80px;
+                      height:80px;
+                      display:flex;
+                      align-items:center;
+                      justify-content:center;
+                      background:#f2f2f2;
+                      margin:0 auto 8px;
+                      border-radius:8px;
                     "
                   >
                     🖼️
@@ -957,19 +900,6 @@ async function mostrarProductosFirebase () {
 
                 <br><br>
 
-                ${
-                  producto.imagen
-                    ? `
-                      🖼️ Imagen:
-                      ${producto.imagen}
-                    `
-                    : `
-                      🖼️ Sin imagen por ahora
-                    `
-                }
-
-                <br><br>
-
                 <button
                   class="boton-otro-escaneo"
                   data-codigo="${producto.codigo}"
@@ -985,10 +915,6 @@ async function mostrarProductosFirebase () {
       </div>
     `
 
-    // ==================================================
-    // BOTONES ELIMINAR
-    // ==================================================
-
     document
       .querySelectorAll('#listaProductosGuardados .boton-otro-escaneo')
       .forEach(boton => {
@@ -1003,15 +929,11 @@ async function mostrarProductosFirebase () {
       <div class="producto-encontrado">
 
         <h3>
-          ❌ Error al cargar productos
+          ❌ Error al cargar
         </h3>
 
         <p>
           No se pudo conectar con Firebase.
-        </p>
-
-        <p>
-          Revisá la consola del navegador.
         </p>
 
       </div>
@@ -1031,15 +953,7 @@ async function eliminarProductoFirebase (codigo) {
   if (!confirmar) return
 
   try {
-    // ==================================================
-    // ELIMINAR DE FIREBASE
-    // ==================================================
-
     await deleteDoc(doc(db, 'productos', codigo))
-
-    // ==================================================
-    // ELIMINAR DEL RESPALDO LOCAL
-    // ==================================================
 
     const lista = obtenerProductosPendientes().filter(
       producto => producto.codigo !== codigo
@@ -1058,20 +972,24 @@ async function eliminarProductoFirebase (codigo) {
 }
 
 // ======================================================
-// BUSCADOR DE PRODUCTOS DEL HTML
+// BUSCADOR DE PRODUCTOS
 // ======================================================
 
 const buscadorProductos = $('buscadorProductos')
 
-buscadorProductos.addEventListener('input', () => {
-  const texto = buscadorProductos.value.toLowerCase().trim()
+if (buscadorProductos) {
+  buscadorProductos.addEventListener('input', () => {
+    const texto = buscadorProductos.value.toLowerCase().trim()
 
-  document.querySelectorAll('.producto').forEach(producto => {
-    producto.style.display = producto.textContent.toLowerCase().includes(texto)
-      ? 'block'
-      : 'none'
+    document.querySelectorAll('.producto').forEach(producto => {
+      producto.style.display = producto.textContent
+        .toLowerCase()
+        .includes(texto)
+        ? 'block'
+        : 'none'
+    })
   })
-})
+}
 
 // ======================================================
 // PRUEBA DE CONEXIÓN FIREBASE
@@ -1085,7 +1003,7 @@ async function probarConexionFirebase () {
 
     console.log('🔥 Conexión con Firebase correcta.')
 
-    console.log('📦 Productos encontrados en Firestore:', snapshot.size)
+    console.log('📦 Productos encontrados:', snapshot.size)
   } catch (error) {
     console.error('❌ Error conectando con Firebase:', error)
   }

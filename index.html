@@ -2,7 +2,10 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
 
     <title>Kiosco Lucila</title>
 
@@ -10,36 +13,130 @@
   </head>
 
   <body>
+    <!-- =========================
+         ENCABEZADO
+    ========================== -->
+
     <header>
       <h1>Kiosco Lucila</h1>
     </header>
 
     <!-- =========================
-         ESCÁNER
+         MENÚ
+    ========================== -->
+
+    <nav class="menu-fijo">
+      <button class="boton-menu" type="button" aria-label="Abrir menú">
+        ☰
+      </button>
+
+      <ul class="lista-menu">
+        <li class="buscador-menu">
+          <input
+            type="search"
+            id="buscadorProductos"
+            placeholder="🔎 Buscar producto..."
+            autocomplete="off"
+          />
+        </li>
+
+        <li>
+          <a href="#comidas">Comidas</a>
+        </li>
+
+        <li>
+          <a href="#bebidas">Bebidas</a>
+        </li>
+
+        <li>
+          <a href="#limpieza">Limpieza</a>
+        </li>
+
+        <li>
+          <a href="#dulces">Dulces</a>
+        </li>
+
+        <li>
+          <a href="#otros">Otros</a>
+        </li>
+
+        <li>
+          <button id="btnModoDueno" class="boton-modo-dueno-menu" type="button">
+            🔐 Modo dueño
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- =========================
+         CONSULTAR PRODUCTO
     ========================== -->
 
     <section class="seccion-escaner">
       <div class="tarjeta-escaner">
-        <div class="icono-escaner">📷</div>
+        <div class="icono-escaner">🛒</div>
 
-        <h2>Consultar producto</h2>
+        <h2>Consultar precio</h2>
 
-        <p class="texto-escaner">
-          Escaneá el código de barras para ver el precio.
-        </p>
+        <p class="texto-escaner">Escaneá el código o ingresalo manualmente.</p>
 
-        <button id="btnEscanear" class="boton-escanear">
-          📷 Escanear producto
+        <!-- =========================
+             CONSULTA MANUAL
+        ========================== -->
+
+        <div class="consulta-manual">
+          <div class="campo-codigo">
+            <input
+              type="text"
+              id="codigoConsulta"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="off"
+              placeholder="Código de barras"
+              aria-label="Código de barras"
+            />
+
+            <button
+              id="btnConsultarCodigo"
+              type="button"
+              class="boton-consultar"
+            >
+              Consultar
+            </button>
+          </div>
+        </div>
+
+        <!-- SEPARADOR -->
+
+        <div class="separador-consulta">
+          <span>o</span>
+        </div>
+
+        <!-- =========================
+             ESCANEAR
+        ========================== -->
+
+        <button id="btnEscanear" class="boton-escanear" type="button">
+          📷 Escanear código
         </button>
+
+        <!-- =========================
+             LECTOR
+        ========================== -->
 
         <div id="lector" class="lector" style="display: none">
           <div class="marco-escaner">
             <video id="video" autoplay playsinline></video>
+
             <div class="linea-escaner"></div>
           </div>
 
           <p class="instruccion">Apuntá al código de barras</p>
         </div>
+
+        <!-- =========================
+             RESULTADO
+        ========================== -->
 
         <div id="resultado" class="resultado"></div>
       </div>
@@ -55,58 +152,86 @@
 
         <h2>Modo dueño</h2>
 
-        <p class="texto-escaner">
-          Este sector es exclusivo para administrar los productos.
-        </p>
+        <p class="texto-escaner">Administrá los productos del kiosco.</p>
 
-        <button id="btnAgregarProducto" class="boton-escanear">
+        <!-- =========================
+             BOTONES ADMINISTRACIÓN
+        ========================== -->
+
+        <button id="btnAgregarProducto" class="boton-escanear" type="button">
           ➕ Agregar producto
         </button>
 
-        <button id="btnVerProductos" class="boton-escanear">
-          📦 Ver productos guardados
+        <button id="btnVerProductos" class="boton-escanear" type="button">
+          📦 Ver productos
         </button>
+
+        <!-- =========================
+             LISTA PRODUCTOS
+        ========================== -->
 
         <div id="listaProductosGuardados"></div>
 
-        <!-- FORMULARIO AGREGAR PRODUCTO -->
+        <!-- =========================
+             FORMULARIO
+        ========================== -->
 
         <div id="formularioProducto" style="display: none">
           <h3>➕ Agregar producto</h3>
 
+          <!-- CÓDIGO -->
+
           <label for="codigoProducto"> Código de barras </label>
 
-          <input
-            type="text"
-            id="codigoProducto"
-            placeholder="Ingresá el código"
-          />
+          <div class="campo-codigo-dueno">
+            <input
+              type="text"
+              id="codigoProducto"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="Ingresá el código"
+            />
 
-          <button type="button" id="btnEscanearParaAgregar">
-            📷 Escanear código
-          </button>
+            <button type="button" id="btnEscanearParaAgregar">📷</button>
+          </div>
 
-          <label for="nombreProducto"> Nombre del producto </label>
+          <!-- NOMBRE -->
+
+          <label for="nombreProducto"> Nombre </label>
 
           <input
             type="text"
             id="nombreProducto"
             placeholder="Ej: Coca Cola 500 ml"
+            autocomplete="off"
           />
+
+          <!-- PRECIO -->
 
           <label for="precioProducto"> Precio </label>
 
-          <input type="text" id="precioProducto" placeholder="Ej: $1500" />
+          <input
+            type="text"
+            id="precioProducto"
+            inputmode="decimal"
+            placeholder="Ej: $1500"
+          />
 
-          <!-- IMAGEN OPCIONAL -->
+          <!-- IMAGEN -->
 
-          <label for="imagenProducto"> Nombre de la imagen (opcional) </label>
+          <label for="imagenProducto">
+            Imagen
+            <span>(opcional)</span>
+          </label>
 
           <input
             type="text"
             id="imagenProducto"
-            placeholder="Podés agregarla más adelante"
+            placeholder="Ej: coca-cola.webp"
+            autocomplete="off"
           />
+
+          <!-- CATEGORÍA -->
 
           <label for="categoriaProducto"> Categoría </label>
 
@@ -124,67 +249,31 @@
             <option value="otros">Otros</option>
           </select>
 
+          <!-- GUARDAR -->
+
           <button type="button" id="btnGuardarProducto">
             💾 Guardar producto
           </button>
         </div>
 
-        <button id="btnCerrarModoDueno" class="boton-escanear">
+        <!-- =========================
+             CERRAR MODO DUEÑO
+        ========================== -->
+
+        <button id="btnCerrarModoDueno" class="boton-escanear" type="button">
           🔒 Cerrar modo dueño
         </button>
       </div>
     </section>
 
     <!-- =========================
-         MENÚ
-    ========================== -->
-
-    <nav class="menu-fijo">
-      <button class="boton-menu">☰</button>
-
-      <ul class="lista-menu">
-        <li class="buscador-menu">
-          <input
-            type="search"
-            id="buscadorProductos"
-            placeholder="🔎 Buscar producto..."
-          />
-        </li>
-
-        <li>
-          <a href="#comidas"> Comidas </a>
-        </li>
-
-        <li>
-          <a href="#bebidas"> Bebidas </a>
-        </li>
-
-        <li>
-          <a href="#limpieza"> Limpieza </a>
-        </li>
-
-        <li>
-          <a href="#dulces"> Dulces </a>
-        </li>
-
-        <li>
-          <a href="#otros"> Otros </a>
-        </li>
-
-        <li>
-          <button id="btnModoDueno" class="boton-modo-dueno-menu">
-            🔐 Modo dueño
-          </button>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- =========================
-         PRODUCTOS
+         CATÁLOGO
     ========================== -->
 
     <main>
-      <!-- COMIDAS -->
+      <!-- =========================
+           COMIDAS
+      ========================== -->
 
       <section id="comidas">
         <h2>Comidas</h2>
@@ -194,14 +283,19 @@
             <img
               src="imagenes/Ravioles-La-Morocha.webp"
               alt="Ravioles la Morocha"
+              loading="lazy"
             />
+
             <h3>Ravioles la Morocha</h3>
+
             <p>$2400</p>
           </div>
+
           <div class="producto">
             <img
               src="imagenes/exquisita-chocolate.webp"
               alt="Exquisita Chocolate"
+              loading="lazy"
             />
 
             <h3>Exquisita Chocolate</h3>
@@ -213,6 +307,7 @@
             <img
               src="imagenes/pure-de-tomate-grande.webp"
               alt="Puré de tomate grande"
+              loading="lazy"
             />
 
             <h3>Puré de tomate grande</h3>
@@ -224,31 +319,44 @@
             <img
               src="imagenes/pure-de-tomate-chico.webp"
               alt="Puré de tomate chico"
+              loading="lazy"
             />
 
             <h3>Puré de tomate chico</h3>
 
             <p>$700</p>
           </div>
+
           <div class="producto">
             <img
               src="imagenes/exquisita-Vainilla.webp"
               alt="Exquisita Vainilla"
+              loading="lazy"
             />
 
             <h3>Exquisita Vainilla</h3>
 
             <p>$4000</p>
           </div>
+
           <div class="producto">
-            <img src="imagenes/lata-jardinera.webp" alt="Lata Jardinera" />
+            <img
+              src="imagenes/lata-jardinera.webp"
+              alt="Lata de Jardinera"
+              loading="lazy"
+            />
 
             <h3>Lata Jardinera</h3>
 
             <p>$1300</p>
           </div>
+
           <div class="producto">
-            <img src="imagenes/lata-lentejas.webp" alt="Lata Lentejas" />
+            <img
+              src="imagenes/lata-lentejas.webp"
+              alt="Lata de Lentejas"
+              loading="lazy"
+            />
 
             <h3>Lata Lentejas</h3>
 
@@ -256,7 +364,11 @@
           </div>
 
           <div class="producto">
-            <img src="imagenes/Tomate-Triturado.webp" alt="Tomate Triturado" />
+            <img
+              src="imagenes/Tomate-Triturado.webp"
+              alt="Tomate Triturado"
+              loading="lazy"
+            />
 
             <h3>Tomate Triturado</h3>
 
@@ -265,14 +377,20 @@
         </div>
       </section>
 
-      <!-- BEBIDAS -->
+      <!-- =========================
+           BEBIDAS
+      ========================== -->
 
       <section id="bebidas">
         <h2>Bebidas</h2>
 
         <div class="contenedor-productos">
           <div class="producto">
-            <img src="imagenes/Vino-Elementos.webp" alt="Vino Elementos" />
+            <img
+              src="imagenes/Vino-Elementos.webp"
+              alt="Vino Elementos"
+              loading="lazy"
+            />
 
             <h3>Vino Elementos</h3>
 
@@ -280,24 +398,35 @@
           </div>
 
           <div class="producto">
-            <img src="imagenes/cappuccino.webp" alt="Cappuccino" />
+            <img
+              src="imagenes/cappuccino.webp"
+              alt="Cappuccino"
+              loading="lazy"
+            />
 
             <h3>Cappuccino</h3>
 
             <p>$3500</p>
           </div>
+
           <div class="producto">
             <img
               src="imagenes/ilolay-descremada.webp"
               alt="Ilolay Descremada"
+              loading="lazy"
             />
 
             <h3>Ilolay Descremada</h3>
 
             <p>$2200</p>
           </div>
+
           <div class="producto">
-            <img src="imagenes/ilolay-entera.webp" alt="Ilolay Entera" />
+            <img
+              src="imagenes/ilolay-entera.webp"
+              alt="Ilolay Entera"
+              loading="lazy"
+            />
 
             <h3>Ilolay Entera</h3>
 
@@ -305,7 +434,11 @@
           </div>
 
           <div class="producto">
-            <img src="imagenes/Vino-Benjamin.webp" alt="Vino Benjamín" />
+            <img
+              src="imagenes/Vino-Benjamin.webp"
+              alt="Vino Benjamín"
+              loading="lazy"
+            />
 
             <h3>Vino Benjamín</h3>
 
@@ -313,7 +446,11 @@
           </div>
 
           <div class="producto">
-            <img src="imagenes/cafe-arlistan.webp" alt="Café Arlistán" />
+            <img
+              src="imagenes/cafe-arlistan.webp"
+              alt="Café Arlistán"
+              loading="lazy"
+            />
 
             <h3>Café Arlistán</h3>
 
@@ -321,7 +458,11 @@
           </div>
 
           <div class="producto">
-            <img src="imagenes/cafe-la-virginia.webp" alt="Café La Virginia" />
+            <img
+              src="imagenes/cafe-la-virginia.webp"
+              alt="Café La Virginia"
+              loading="lazy"
+            />
 
             <h3>Café La Virginia</h3>
 
@@ -329,7 +470,7 @@
           </div>
 
           <div class="producto">
-            <img src="imagenes/nesquik.webp" alt="Nesquik" />
+            <img src="imagenes/nesquik.webp" alt="Nesquik" loading="lazy" />
 
             <h3>Nesquik</h3>
 
@@ -337,7 +478,11 @@
           </div>
 
           <div class="producto">
-            <img src="imagenes/Vino-Circus.webp" alt="Vino Circus" />
+            <img
+              src="imagenes/Vino-Circus.webp"
+              alt="Vino Circus"
+              loading="lazy"
+            />
 
             <h3>Vino Circus</h3>
 
@@ -346,14 +491,20 @@
         </div>
       </section>
 
-      <!-- LIMPIEZA -->
+      <!-- =========================
+           LIMPIEZA
+      ========================== -->
 
       <section id="limpieza">
         <h2>Limpieza</h2>
 
         <div class="contenedor-productos">
           <div class="producto">
-            <img src="https://via.placeholder.com/150" alt="Lavandina" />
+            <img
+              src="https://via.placeholder.com/150"
+              alt="Lavandina"
+              loading="lazy"
+            />
 
             <h3>Lavandina</h3>
 
@@ -362,7 +513,9 @@
         </div>
       </section>
 
-      <!-- DULCES -->
+      <!-- =========================
+           DULCES
+      ========================== -->
 
       <section id="dulces">
         <h2>Dulces</h2>
@@ -372,6 +525,7 @@
             <img
               src="imagenes/baño-de-reposteria.webp"
               alt="Baño de repostería"
+              loading="lazy"
             />
 
             <h3>Baño de repostería</h3>
@@ -380,7 +534,11 @@
           </div>
 
           <div class="producto">
-            <img src="imagenes/Flan-De-Vainilla.webp" alt="Flan de Vainilla" />
+            <img
+              src="imagenes/Flan-De-Vainilla.webp"
+              alt="Flan de Vainilla"
+              loading="lazy"
+            />
 
             <h3>Flan de Vainilla</h3>
 
@@ -388,7 +546,7 @@
           </div>
 
           <div class="producto">
-            <img src="imagenes/Gelatina.webp" alt="Gelatina" />
+            <img src="imagenes/Gelatina.webp" alt="Gelatina" loading="lazy" />
 
             <h3>Gelatina</h3>
 
@@ -396,7 +554,7 @@
           </div>
 
           <div class="producto">
-            <img src="otro-dulce2.jpg" alt="Otro dulce" />
+            <img src="otro-dulce2.jpg" alt="Otro dulce" loading="lazy" />
 
             <h3>Otro dulce</h3>
 
@@ -405,14 +563,20 @@
         </div>
       </section>
 
-      <!-- OTROS -->
+      <!-- =========================
+           OTROS
+      ========================== -->
 
       <section id="otros">
         <h2>Otros</h2>
 
         <div class="contenedor-productos">
           <div class="producto">
-            <img src="https://via.placeholder.com/150" alt="Velas" />
+            <img
+              src="https://via.placeholder.com/150"
+              alt="Velas"
+              loading="lazy"
+            />
 
             <h3>Velas</h3>
 
@@ -426,18 +590,24 @@
          WHATSAPP
     ========================== -->
 
-    <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp" target="_blank">
+    <a
+      href="https://wa.me/549XXXXXXXXXX"
+      class="whatsapp"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+    >
       WhatsApp
     </a>
 
     <!-- =========================
-         ZXING - ESCÁNER
+         ZXING
     ========================== -->
 
     <script src="https://unpkg.com/@zxing/library@latest"></script>
 
     <!-- =========================
-         JAVASCRIPT + FIREBASE
+         JAVASCRIPT
     ========================== -->
 
     <script type="module" src="script.js"></script>
