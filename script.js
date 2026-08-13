@@ -15,7 +15,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js'
 
 // ======================================================
-// CONFIGURACIÓN DE TU PROYECTO FIREBASE
+// CONFIGURACIÓN DE FIREBASE
 // ======================================================
 
 const firebaseConfig = {
@@ -296,26 +296,57 @@ async function iniciarEscaner (modo) {
   resultado.textContent = '📷 Preparando la cámara...'
 
   try {
-    const dispositivos = await codeReader.listVideoInputDevices()
+    // ==================================================
+    // PEDIR CÁMARA TRASERA
+    // ==================================================
 
-    if (dispositivos.length === 0) {
-      throw new Error('No hay cámara disponible')
-    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: {
+          ideal: 'environment'
+        }
+      },
+      audio: false
+    })
 
-    const camara = dispositivos[dispositivos.length - 1].deviceId
+    // ==================================================
+    // MOSTRAR CÁMARA
+    // ==================================================
+
+    video.srcObject = stream
+
+    await video.play()
 
     resultado.textContent = '📷 Apuntá al código de barras...'
 
-    codeReader.decodeFromVideoDevice(camara, video, result => {
+    // ==================================================
+    // INICIAR ZXING
+    // ==================================================
+
+    codeReader.decodeFromVideoElement(video, result => {
       if (!result) return
 
       const codigo = result.text.trim()
+
+      console.log('📷 Código detectado:', codigo)
+
+      // ==================================================
+      // DETENER CÁMARA
+      // ==================================================
+
+      if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop())
+
+        video.srcObject = null
+      }
 
       codeReader.reset()
 
       lector.style.display = 'none'
 
-      // AGREGAR PRODUCTO
+      // ==================================================
+      // SI ESTAMOS AGREGANDO PRODUCTO
+      // ==================================================
 
       if (modo === 'agregar') {
         codigoProducto.value = codigo
@@ -325,17 +356,36 @@ async function iniciarEscaner (modo) {
         return
       }
 
-      // CONSULTAR PRODUCTO
+      // ==================================================
+      // SI ESTAMOS CONSULTANDO PRODUCTO
+      // ==================================================
 
       buscarProducto(codigo)
     })
   } catch (error) {
-    console.error('Error de cámara:', error)
+    console.error('❌ Error de cámara:', error)
 
     lector.style.display = 'none'
 
-    resultado.textContent =
-      '❌ No se pudo acceder a la cámara. Revisá los permisos.'
+    resultado.innerHTML = `
+      <div class="producto-encontrado">
+
+        <h3>
+          ❌ No se pudo abrir la cámara
+        </h3>
+
+        <p>
+          Revisá que hayas permitido el acceso
+          a la cámara.
+        </p>
+
+        <p>
+          Si estás usando el celular,
+          asegurate de abrir la página mediante HTTPS.
+        </p>
+
+      </div>
+    `
   }
 }
 
@@ -351,6 +401,10 @@ async function buscarProducto (codigo) {
 
     const documento = await getDoc(referencia)
 
+    // ==================================================
+    // PRODUCTO EN FIREBASE
+    // ==================================================
+
     if (documento.exists()) {
       const producto = documento.data()
 
@@ -361,7 +415,9 @@ async function buscarProducto (codigo) {
       return
     }
 
-    // BUSCAR PRODUCTO LOCAL
+    // ==================================================
+    // PRODUCTO LOCAL
+    // ==================================================
 
     const productoLocal = productos[codigo]
 
@@ -371,11 +427,17 @@ async function buscarProducto (codigo) {
       return
     }
 
+    // ==================================================
+    // NO ENCONTRADO
+    // ==================================================
+
     mostrarProductoNoEncontrado(codigo)
   } catch (error) {
-    console.error('Error buscando en Firebase:', error)
+    console.error('❌ Error buscando en Firebase:', error)
 
+    // ==================================================
     // RESPALDO LOCAL
+    // ==================================================
 
     const productoLocal = productos[codigo]
 
@@ -392,7 +454,10 @@ async function buscarProducto (codigo) {
 // ======================================================
 
 function mostrarProducto (producto, codigo) {
+  // ==================================================
   // IMAGEN OPCIONAL
+  // ==================================================
+
   const imagenHTML = producto.imagen
     ? `
         <img
@@ -403,7 +468,6 @@ function mostrarProducto (producto, codigo) {
     : ''
 
   resultado.innerHTML = `
-
     <div class="producto-encontrado">
 
       ${imagenHTML}
@@ -418,9 +482,7 @@ function mostrarProducto (producto, codigo) {
 
       <p>
         Código:
-        <strong>
-          ${codigo}
-        </strong>
+        <strong>${codigo}</strong>
       </p>
 
       <button
@@ -431,7 +493,6 @@ function mostrarProducto (producto, codigo) {
       </button>
 
     </div>
-
   `
 
   const btnOtroEscaneo = document.getElementById('btnOtroEscaneo')
@@ -449,7 +510,6 @@ function mostrarProducto (producto, codigo) {
 
 function mostrarProductoNoEncontrado (codigo) {
   resultado.innerHTML = `
-
     <div class="producto-encontrado">
 
       <h3>
@@ -458,9 +518,7 @@ function mostrarProductoNoEncontrado (codigo) {
 
       <p>
         No tenemos registrado el código:
-        <strong>
-          ${codigo}
-        </strong>
+        <strong>${codigo}</strong>
       </p>
 
       <button
@@ -471,7 +529,6 @@ function mostrarProductoNoEncontrado (codigo) {
       </button>
 
     </div>
-
   `
 
   document.getElementById('btnOtroEscaneo').addEventListener('click', () => {
@@ -488,6 +545,10 @@ function mostrarProductoNoEncontrado (codigo) {
 btnGuardarProducto.addEventListener('click', async () => {
   if (!comprobarModoDueno()) return
 
+  // ==================================================
+  // OBTENER DATOS
+  // ==================================================
+
   const codigo = codigoProducto.value.trim()
 
   const nombre = nombreProducto.value.trim()
@@ -499,10 +560,18 @@ btnGuardarProducto.addEventListener('click', async () => {
   const categoria = categoriaProducto.value
 
   // ==================================================
-  // COMPROBAR CAMPOS
+  // CAMPOS OBLIGATORIOS
   // ==================================================
   //
-  // LA IMAGEN YA NO ES OBLIGATORIA
+  // LA IMAGEN NO ES OBLIGATORIA.
+  //
+  // Obligatorios:
+  // - Código
+  // - Nombre
+  // - Precio
+  // - Categoría
+  //
+  // La imagen puede quedar vacía.
   // ==================================================
 
   if (!codigo || !nombre || !precio || !categoria) {
@@ -514,20 +583,16 @@ btnGuardarProducto.addEventListener('click', async () => {
   // ==================================================
   // CREAR RUTA DE IMAGEN
   // ==================================================
-  //
-  // Si no hay imagen:
-  // rutaImagen = ''
-  //
-  // Si hay imagen:
-  // se agrega "imagenes/"
-  // automáticamente.
-  // ==================================================
 
-  const rutaImagen = imagen
-    ? imagen.startsWith('imagenes/')
-      ? imagen
-      : `imagenes/${imagen}`
-    : ''
+  let rutaImagen = ''
+
+  if (imagen) {
+    if (imagen.startsWith('imagenes/')) {
+      rutaImagen = imagen
+    } else {
+      rutaImagen = `imagenes/${imagen}`
+    }
+  }
 
   // ==================================================
   // CREAR PRODUCTO
@@ -535,19 +600,18 @@ btnGuardarProducto.addEventListener('click', async () => {
 
   const producto = {
     nombre: nombre,
-
     precio: precio,
-
     imagen: rutaImagen,
-
     categoria: categoria
   }
+
+  console.log('📦 Producto que se va a guardar:', producto)
 
   try {
     resultado.innerHTML = '💾 Guardando producto en Firebase...'
 
     // ==================================================
-    // GUARDAR EN FIRESTORE
+    // GUARDAR EN FIREBASE
     // ==================================================
 
     await setDoc(doc(db, 'productos', codigo), producto)
@@ -555,7 +619,7 @@ btnGuardarProducto.addEventListener('click', async () => {
     console.log('🔥 Producto guardado:', codigo, producto)
 
     // ==================================================
-    // GUARDAR COPIA LOCAL
+    // RESPALDO LOCAL
     // ==================================================
 
     const lista = obtenerProductosPendientes().filter(
@@ -564,18 +628,16 @@ btnGuardarProducto.addEventListener('click', async () => {
 
     lista.push({
       codigo: codigo,
-
       ...producto
     })
 
     guardarProductosPendientes(lista)
 
     // ==================================================
-    // MOSTRAR CONFIRMACIÓN
+    // CONFIRMACIÓN
     // ==================================================
 
     resultado.innerHTML = `
-
         <div class="producto-encontrado">
 
           <h3>
@@ -622,7 +684,6 @@ btnGuardarProducto.addEventListener('click', async () => {
           </p>
 
         </div>
-
       `
 
     // ==================================================
@@ -645,10 +706,9 @@ btnGuardarProducto.addEventListener('click', async () => {
 
     await mostrarProductosFirebase()
   } catch (error) {
-    console.error('Error guardando producto:', error)
+    console.error('❌ Error guardando producto:', error)
 
     resultado.innerHTML = `
-
         <div class="producto-encontrado">
 
           <h3>
@@ -665,7 +725,6 @@ btnGuardarProducto.addEventListener('click', async () => {
           </p>
 
         </div>
-
       `
   }
 })
@@ -686,7 +745,6 @@ btnVerProductos.addEventListener('click', async () => {
 
 async function mostrarProductosFirebase () {
   listaProductosGuardados.innerHTML = `
-
     <div class="producto-encontrado">
 
       <h3>
@@ -694,7 +752,6 @@ async function mostrarProductosFirebase () {
       </h3>
 
     </div>
-
   `
 
   try {
@@ -702,9 +759,12 @@ async function mostrarProductosFirebase () {
 
     const snapshot = await getDocs(productosRef)
 
+    // ==================================================
+    // NO HAY PRODUCTOS
+    // ==================================================
+
     if (snapshot.empty) {
       listaProductosGuardados.innerHTML = `
-
         <div class="producto-encontrado">
 
           <h3>
@@ -712,22 +772,27 @@ async function mostrarProductosFirebase () {
           </h3>
 
         </div>
-
       `
 
       return
     }
 
+    // ==================================================
+    // CREAR LISTA
+    // ==================================================
+
     const lista = snapshot.docs.map(documento => ({
       codigo: documento.id,
-
       ...documento.data()
     }))
 
     console.log('🔥 Productos de Firebase:', lista)
 
-    listaProductosGuardados.innerHTML = `
+    // ==================================================
+    // MOSTRAR PRODUCTOS
+    // ==================================================
 
+    listaProductosGuardados.innerHTML = `
       <div class="producto-encontrado">
 
         <h3>
@@ -743,95 +808,93 @@ async function mostrarProductosFirebase () {
 
         ${lista
           .map(producto => {
+            // ==========================================
             // IMAGEN OPCIONAL
+            // ==========================================
 
             const imagenHTML = producto.imagen
               ? `
-                    <img
-                      src="${producto.imagen}"
-                      alt="${producto.nombre}"
-                      style="
-                        width: 80px;
-                        height: 80px;
-                        object-fit: contain;
-                        display: block;
-                        margin-bottom: 10px;
-                      "
-                    >
-                  `
+                  <img
+                    src="${producto.imagen}"
+                    alt="${producto.nombre}"
+                    style="
+                      width: 80px;
+                      height: 80px;
+                      object-fit: contain;
+                      display: block;
+                      margin-bottom: 10px;
+                    "
+                  >
+                `
               : `
-                    <div
-                      style="
-                        width: 80px;
-                        height: 80px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        background: #f2f2f2;
-                        margin-bottom: 10px;
-                        border-radius: 8px;
-                      "
-                    >
-                      🖼️
-                    </div>
-                  `
+                  <div
+                    style="
+                      width: 80px;
+                      height: 80px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      background: #f2f2f2;
+                      margin-bottom: 10px;
+                      border-radius: 8px;
+                    "
+                  >
+                    🖼️
+                  </div>
+                `
 
             return `
+              <div class="producto-pendiente">
 
-                <div class="producto-pendiente">
+                ${imagenHTML}
 
-                  ${imagenHTML}
+                <strong>
+                  ${producto.nombre}
+                </strong>
 
-                  <strong>
-                    ${producto.nombre}
-                  </strong>
+                <br>
 
-                  <br>
+                Código:
+                ${producto.codigo}
 
-                  Código:
-                  ${producto.codigo}
+                <br>
 
-                  <br>
+                Precio:
+                ${producto.precio}
 
-                  Precio:
-                  ${producto.precio}
+                <br>
 
-                  <br>
+                Categoría:
+                ${producto.categoria}
 
-                  Categoría:
-                  ${producto.categoria}
+                <br><br>
 
-                  <br>
+                ${
+                  producto.imagen
+                    ? `
+                      🖼️ Imagen:
+                      ${producto.imagen}
+                    `
+                    : `
+                      🖼️ Sin imagen por ahora
+                    `
+                }
 
-                  ${
-                    producto.imagen
-                      ? `
-                        Imagen:
-                        ${producto.imagen}
-                      `
-                      : `
-                        Imagen:
-                        Sin imagen
-                      `
-                  }
+                <br><br>
 
-                  <br><br>
+                <button
+                  class="boton-otro-escaneo"
+                  data-codigo="${producto.codigo}"
+                >
+                  🗑️ Eliminar
+                </button>
 
-                  <button
-                    class="boton-otro-escaneo"
-                    data-codigo="${producto.codigo}"
-                  >
-                    🗑️ Eliminar
-                  </button>
-
-                </div>
-
-              `
+              </div>
+            `
           })
           .join('')}
 
       </div>
-
     `
 
     // ==================================================
@@ -846,10 +909,9 @@ async function mostrarProductosFirebase () {
         })
       })
   } catch (error) {
-    console.error('Error obteniendo productos:', error)
+    console.error('❌ Error obteniendo productos:', error)
 
     listaProductosGuardados.innerHTML = `
-
       <div class="producto-encontrado">
 
         <h3>
@@ -865,7 +927,6 @@ async function mostrarProductosFirebase () {
         </p>
 
       </div>
-
     `
   }
 }
@@ -882,10 +943,14 @@ async function eliminarProductoFirebase (codigo) {
   if (!confirmar) return
 
   try {
+    // ==================================================
+    // ELIMINAR DE FIREBASE
+    // ==================================================
+
     await deleteDoc(doc(db, 'productos', codigo))
 
     // ==================================================
-    // ELIMINAR TAMBIÉN DE LA COPIA LOCAL
+    // ELIMINAR DEL RESPALDO LOCAL
     // ==================================================
 
     const lista = obtenerProductosPendientes().filter(
@@ -898,7 +963,7 @@ async function eliminarProductoFirebase (codigo) {
 
     await mostrarProductosFirebase()
   } catch (error) {
-    console.error('Error eliminando producto:', error)
+    console.error('❌ Error eliminando producto:', error)
 
     alert('❌ No se pudo eliminar el producto.')
   }
@@ -921,7 +986,7 @@ buscadorProductos.addEventListener('input', () => {
 })
 
 // ======================================================
-// PRUEBA DE CONEXIÓN
+// PRUEBA DE CONEXIÓN FIREBASE
 // ======================================================
 
 async function probarConexionFirebase () {
