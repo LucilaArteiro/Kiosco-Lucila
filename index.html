@@ -3,19 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Kiosco Lucila</title>
+
     <link rel="stylesheet" href="styles.css" />
   </head>
+
   <body>
-    <header><h1>Kiosco Lucila</h1></header>
+    <header>
+      <h1>Kiosco Lucila</h1>
+    </header>
+
+    <!-- =========================
+         ESCÁNER
+    ========================== -->
 
     <section class="seccion-escaner">
       <div class="tarjeta-escaner">
         <div class="icono-escaner">📷</div>
+
         <h2>Consultar producto</h2>
+
         <p class="texto-escaner">
           Escaneá el código de barras para ver el precio.
         </p>
+
         <button id="btnEscanear" class="boton-escanear">
           📷 Escanear producto
         </button>
@@ -25,6 +37,7 @@
             <video id="video" autoplay playsinline></video>
             <div class="linea-escaner"></div>
           </div>
+
           <p class="instruccion">Apuntá al código de barras</p>
         </div>
 
@@ -32,10 +45,16 @@
       </div>
     </section>
 
+    <!-- =========================
+         MODO DUEÑO
+    ========================== -->
+
     <section id="panelDueno" class="seccion-escaner" style="display: none">
       <div class="tarjeta-escaner">
         <div class="icono-escaner">🔐</div>
+
         <h2>Modo dueño</h2>
+
         <p class="texto-escaner">
           Este sector es exclusivo para administrar los productos.
         </p>
@@ -43,49 +62,65 @@
         <button id="btnAgregarProducto" class="boton-escanear">
           ➕ Agregar producto
         </button>
+
         <button id="btnVerProductos" class="boton-escanear">
           📦 Ver productos guardados
         </button>
 
         <div id="listaProductosGuardados"></div>
 
+        <!-- FORMULARIO AGREGAR PRODUCTO -->
+
         <div id="formularioProducto" style="display: none">
           <h3>➕ Agregar producto</h3>
 
-          <label for="codigoProducto">Código de barras</label>
+          <label for="codigoProducto"> Código de barras </label>
+
           <input
             type="text"
             id="codigoProducto"
             placeholder="Ingresá el código"
           />
+
           <button type="button" id="btnEscanearParaAgregar">
             📷 Escanear código
           </button>
 
-          <label for="nombreProducto">Nombre del producto</label>
+          <label for="nombreProducto"> Nombre del producto </label>
+
           <input
             type="text"
             id="nombreProducto"
             placeholder="Ej: Coca Cola 500 ml"
           />
 
-          <label for="precioProducto">Precio</label>
+          <label for="precioProducto"> Precio </label>
+
           <input type="text" id="precioProducto" placeholder="Ej: $1500" />
 
-          <label for="imagenProducto">Nombre de la imagen</label>
+          <!-- IMAGEN OPCIONAL -->
+
+          <label for="imagenProducto"> Nombre de la imagen (opcional) </label>
+
           <input
             type="text"
             id="imagenProducto"
-            placeholder="Ej: Beldent-Negro.webp"
+            placeholder="Podés agregarla más adelante"
           />
 
-          <label for="categoriaProducto">Categoría</label>
+          <label for="categoriaProducto"> Categoría </label>
+
           <select id="categoriaProducto">
             <option value="">Seleccionar categoría</option>
+
             <option value="comidas">Comidas</option>
+
             <option value="bebidas">Bebidas</option>
+
             <option value="limpieza">Limpieza</option>
+
             <option value="dulces">Dulces</option>
+
             <option value="otros">Otros</option>
           </select>
 
@@ -100,6 +135,10 @@
       </div>
     </section>
 
+    <!-- =========================
+         MENÚ
+    ========================== -->
+
     <nav class="menu-fijo">
       <button class="boton-menu">☰</button>
 
@@ -112,11 +151,25 @@
           />
         </li>
 
-        <li><a href="#comidas">Comidas</a></li>
-        <li><a href="#bebidas">Bebidas</a></li>
-        <li><a href="#limpieza">Limpieza</a></li>
-        <li><a href="#dulces">Dulces</a></li>
-        <li><a href="#otros">Otros</a></li>
+        <li>
+          <a href="#comidas"> Comidas </a>
+        </li>
+
+        <li>
+          <a href="#bebidas"> Bebidas </a>
+        </li>
+
+        <li>
+          <a href="#limpieza"> Limpieza </a>
+        </li>
+
+        <li>
+          <a href="#dulces"> Dulces </a>
+        </li>
+
+        <li>
+          <a href="#otros"> Otros </a>
+        </li>
 
         <li>
           <button id="btnModoDueno" class="boton-modo-dueno-menu">
@@ -126,149 +179,218 @@
       </ul>
     </nav>
 
+    <!-- =========================
+         PRODUCTOS
+    ========================== -->
+
     <main>
+      <!-- COMIDAS -->
+
       <section id="comidas">
         <h2>Comidas</h2>
+
         <div class="contenedor-productos">
           <div class="producto">
             <img
               src="imagenes/Ravioles-La-Morocha.webp"
               alt="Ravioles la Morocha"
             />
+
             <h3>Ravioles la Morocha</h3>
+
             <p>$500</p>
           </div>
+
           <div class="producto">
             <img
               src="imagenes/pure-de-tomate-grande.webp"
               alt="Puré de tomate grande"
             />
+
             <h3>Puré de tomate grande</h3>
+
             <p>$1500</p>
           </div>
+
           <div class="producto">
             <img
               src="imagenes/pure-de-tomate-chico.webp"
               alt="Puré de tomate chico"
             />
+
             <h3>Puré de tomate chico</h3>
+
             <p>$1500</p>
           </div>
+
           <div class="producto">
             <img src="imagenes/Tomate-Triturado.webp" alt="Tomate Triturado" />
+
             <h3>Tomate Triturado</h3>
+
             <p>$1900</p>
           </div>
         </div>
       </section>
 
+      <!-- BEBIDAS -->
+
       <section id="bebidas">
         <h2>Bebidas</h2>
+
         <div class="contenedor-productos">
           <div class="producto">
             <img src="imagenes/Vino-Elementos.webp" alt="Vino Elementos" />
+
             <h3>Vino Elementos</h3>
+
             <p>$1500</p>
           </div>
+
           <div class="producto">
             <img src="imagenes/cappuccino.webp" alt="Cappuccino" />
+
             <h3>Cappuccino</h3>
+
             <p>$3500</p>
           </div>
+
           <div class="producto">
             <img src="imagenes/Vino-Benjamin.webp" alt="Vino Benjamín" />
+
             <h3>Vino Benjamín</h3>
+
             <p>$1200</p>
           </div>
+
+          <div class="producto">
+            <img src="imagenes/cafe-arlistan.webp" alt="Café Arlistán" />
+
+            <h3>Café Arlistán</h3>
+
+            <p>$2500</p>
+          </div>
+
+          <div class="producto">
+            <img src="imagenes/cafe-la-virginia.webp" alt="Café La Virginia" />
+
+            <h3>Café La Virginia</h3>
+
+            <p>$2500</p>
+          </div>
+
+          <div class="producto">
+            <img src="imagenes/nesquik.webp" alt="Nesquik" />
+
+            <h3>Nesquik</h3>
+
+            <p>$1500</p>
+          </div>
+
           <div class="producto">
             <img src="imagenes/Vino-Circus.webp" alt="Vino Circus" />
+
             <h3>Vino Circus</h3>
+
             <p>$1200</p>
           </div>
         </div>
       </section>
 
+      <!-- LIMPIEZA -->
+
       <section id="limpieza">
         <h2>Limpieza</h2>
+
         <div class="contenedor-productos">
           <div class="producto">
             <img src="https://via.placeholder.com/150" alt="Lavandina" />
+
             <h3>Lavandina</h3>
+
             <p>$900</p>
           </div>
         </div>
       </section>
 
+      <!-- DULCES -->
+
       <section id="dulces">
         <h2>Dulces</h2>
+
         <div class="contenedor-productos">
           <div class="producto">
             <img
               src="imagenes/Cobertura-de-Chocolate.webp"
               alt="Cobertura de Chocolate"
             />
+
             <h3>Cobertura de Chocolate</h3>
+
             <p>$500</p>
           </div>
+
           <div class="producto">
             <img src="imagenes/Flan-De-Vainilla.webp" alt="Flan de Vainilla" />
+
             <h3>Flan de Vainilla</h3>
+
             <p>$500</p>
           </div>
+
           <div class="producto">
             <img src="imagenes/Gelatina.webp" alt="Gelatina" />
+
             <h3>Gelatina</h3>
+
             <p>$700</p>
           </div>
+
           <div class="producto">
             <img src="otro-dulce2.jpg" alt="Otro dulce" />
+
             <h3>Otro dulce</h3>
+
             <p>$800</p>
           </div>
         </div>
       </section>
 
+      <!-- OTROS -->
+
       <section id="otros">
         <h2>Otros</h2>
+
         <div class="contenedor-productos">
           <div class="producto">
             <img src="https://via.placeholder.com/150" alt="Velas" />
+
             <h3>Velas</h3>
+
             <p>$500</p>
           </div>
         </div>
       </section>
     </main>
 
-    <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp" target="_blank"
-      >WhatsApp</a
-    >
+    <!-- =========================
+         WHATSAPP
+    ========================== -->
+
+    <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp" target="_blank">
+      WhatsApp
+    </a>
+
+    <!-- =========================
+         ZXING - ESCÁNER
+    ========================== -->
 
     <script src="https://unpkg.com/@zxing/library@latest"></script>
-    <script src="script.js"></script>
 
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js'
-      import { getAnalytics } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js'
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
+    <!-- =========================
+         JAVASCRIPT + FIREBASE
+    ========================== -->
 
-      // Your web app's Firebase configuration
-      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-      const firebaseConfig = {
-        apiKey: 'AIzaSyBKFXiic9HlwRv_5tQpx8sZ4plg3IfRiqQ',
-        authDomain: 'kiosco-lucila.firebaseapp.com',
-        projectId: 'kiosco-lucila',
-        storageBucket: 'kiosco-lucila.firebasestorage.app',
-        messagingSenderId: '1067429487710',
-        appId: '1:1067429487710:web:1b2eabc0d9670532ca40cf',
-        measurementId: 'G-32YNFES0DP'
-      }
-
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig)
-      const analytics = getAnalytics(app)
-    </script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
