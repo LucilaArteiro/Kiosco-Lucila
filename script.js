@@ -64,7 +64,11 @@ const panelDueno = $('panelDueno')
 const btnCerrarModoDueno = $('btnCerrarModoDueno')
 
 const btnEscanear = $('btnEscanear')
-const btnConsultarManual = $('btnConsultarManual')
+
+// CORREGIDO:
+// En el HTML el botón se llama btnConsultarCodigo
+const btnConsultarManual = $('btnConsultarCodigo')
+
 const codigoConsulta = $('codigoConsulta')
 
 const btnAgregarProducto = $('btnAgregarProducto')
@@ -81,9 +85,13 @@ const resultado = $('resultado')
 const formularioProducto = $('formularioProducto')
 
 const codigoProducto = $('codigoProducto')
+
 const nombreProducto = $('nombreProducto')
+
 const precioProducto = $('precioProducto')
+
 const imagenProducto = $('imagenProducto')
+
 const categoriaProducto = $('categoriaProducto')
 
 // ======================================================
@@ -93,9 +101,11 @@ const categoriaProducto = $('categoriaProducto')
 function actualizarModoDuenoVisual () {
   if (modoDuenoActivo) {
     panelDueno.style.display = 'flex'
+
     btnModoDueno.textContent = '🔓 Modo dueño activo'
   } else {
     panelDueno.style.display = 'none'
+
     btnModoDueno.textContent = '🔐 Modo dueño'
   }
 }
@@ -224,12 +234,35 @@ function guardarProductosPendientes (lista) {
 }
 
 // ======================================================
+// NORMALIZAR PRECIO
+// ======================================================
+
+function normalizarPrecio (precio) {
+  precio = String(precio || '').trim()
+
+  // Elimina todos los signos $
+  precio = precio.replace(/\$/g, '')
+
+  // Elimina espacios
+  precio = precio.trim()
+
+  // Si está vacío
+  if (!precio) {
+    return ''
+  }
+
+  // Devuelve siempre el precio con $
+  return `$${precio}`
+}
+
+// ======================================================
 // COMPROBAR MODO DUEÑO
 // ======================================================
 
 function comprobarModoDueno () {
   if (!modoDuenoActivo) {
     alert('🔒 Esta función es exclusiva del modo dueño.')
+
     return false
   }
 
@@ -247,6 +280,7 @@ btnModoDueno.addEventListener('click', () => {
 
   if (contrasena !== CONTRASENA_DUENO) {
     alert('❌ Contraseña incorrecta')
+
     return
   }
 
@@ -475,15 +509,19 @@ async function iniciarEscaner (modo) {
     detenerEscaner()
 
     resultado.innerHTML = `
+
       <div class="producto-encontrado">
 
-        <h3>❌ No se pudo iniciar</h3>
+        <h3>
+          ❌ No se pudo iniciar
+        </h3>
 
         <p>
           Revisá los permisos de la cámara.
         </p>
 
       </div>
+
     `
   }
 }
@@ -500,9 +538,13 @@ async function buscarProducto (codigo) {
   }
 
   resultado.innerHTML = `
+
     <div class="producto-encontrado">
+
       🔎 Buscando...
+
     </div>
+
   `
 
   try {
@@ -557,15 +599,20 @@ async function buscarProducto (codigo) {
 function mostrarProducto (producto, codigo) {
   const imagenHTML = producto.imagen
     ? `
+
         <img
           src="${producto.imagen}"
           alt="${producto.nombre}"
           onerror="this.style.display='none'"
         >
+
       `
     : ''
 
+  const precio = normalizarPrecio(producto.precio)
+
   resultado.innerHTML = `
+
     <div class="producto-encontrado">
 
       ${imagenHTML}
@@ -575,7 +622,7 @@ function mostrarProducto (producto, codigo) {
       </h3>
 
       <span class="precio">
-        ${producto.precio}
+        ${precio}
       </span>
 
       <p>
@@ -595,6 +642,7 @@ function mostrarProducto (producto, codigo) {
       </div>
 
     </div>
+
   `
 
   const btnNuevaConsulta = document.getElementById('btnNuevaConsulta')
@@ -618,6 +666,7 @@ function mostrarProducto (producto, codigo) {
 
 function mostrarProductoNoEncontrado (codigo) {
   resultado.innerHTML = `
+
     <div class="producto-encontrado">
 
       <h3>
@@ -637,6 +686,7 @@ function mostrarProductoNoEncontrado (codigo) {
       </button>
 
     </div>
+
   `
 
   const btnNuevaConsulta = document.getElementById('btnNuevaConsulta')
@@ -659,13 +709,19 @@ function mostrarProductoNoEncontrado (codigo) {
 // ======================================================
 
 btnGuardarProducto.addEventListener('click', async () => {
-  if (!comprobarModoDueno()) return
+  if (!comprobarModoDueno()) {
+    return
+  }
 
   const codigo = codigoProducto.value.trim()
 
   const nombre = nombreProducto.value.trim()
 
-  const precio = precioProducto.value.trim()
+  // ================================================
+  // PRECIO
+  // ================================================
+
+  const precio = normalizarPrecio(precioProducto.value)
 
   const imagen = imagenProducto.value.trim()
 
@@ -697,8 +753,11 @@ btnGuardarProducto.addEventListener('click', async () => {
 
   const producto = {
     nombre: nombre,
+
     precio: precio,
+
     imagen: rutaImagen,
+
     categoria: categoria
   }
 
@@ -721,6 +780,7 @@ btnGuardarProducto.addEventListener('click', async () => {
 
     lista.push({
       codigo: codigo,
+
       ...producto
     })
 
@@ -731,9 +791,12 @@ btnGuardarProducto.addEventListener('click', async () => {
     // ==============================================
 
     resultado.innerHTML = `
+
         <div class="producto-encontrado">
 
-          <h3>✅ Producto guardado</h3>
+          <h3>
+            ✅ Producto guardado
+          </h3>
 
           <strong>
             ${nombre}
@@ -756,6 +819,7 @@ btnGuardarProducto.addEventListener('click', async () => {
           </p>
 
         </div>
+
       `
 
     // ==============================================
@@ -763,9 +827,13 @@ btnGuardarProducto.addEventListener('click', async () => {
     // ==============================================
 
     codigoProducto.value = ''
+
     nombreProducto.value = ''
+
     precioProducto.value = ''
+
     imagenProducto.value = ''
+
     categoriaProducto.value = ''
 
     await mostrarProductosFirebase()
@@ -773,15 +841,19 @@ btnGuardarProducto.addEventListener('click', async () => {
     console.error('❌ Error guardando producto:', error)
 
     resultado.innerHTML = `
+
         <div class="producto-encontrado">
 
-          <h3>❌ Error al guardar</h3>
+          <h3>
+            ❌ Error al guardar
+          </h3>
 
           <p>
             No se pudo guardar el producto.
           </p>
 
         </div>
+
       `
   }
 })
@@ -791,7 +863,9 @@ btnGuardarProducto.addEventListener('click', async () => {
 // ======================================================
 
 btnVerProductos.addEventListener('click', async () => {
-  if (!comprobarModoDueno()) return
+  if (!comprobarModoDueno()) {
+    return
+  }
 
   await mostrarProductosFirebase()
 })
@@ -802,9 +876,13 @@ btnVerProductos.addEventListener('click', async () => {
 
 async function mostrarProductosFirebase () {
   listaProductosGuardados.innerHTML = `
+
     <div class="producto-encontrado">
+
       🔎 Cargando productos...
+
     </div>
+
   `
 
   try {
@@ -814,9 +892,15 @@ async function mostrarProductosFirebase () {
 
     if (snapshot.empty) {
       listaProductosGuardados.innerHTML = `
+
         <div class="producto-encontrado">
-          <h3>📦 No hay productos</h3>
+
+          <h3>
+            📦 No hay productos
+          </h3>
+
         </div>
+
       `
 
       return
@@ -824,12 +908,14 @@ async function mostrarProductosFirebase () {
 
     const lista = snapshot.docs.map(documento => ({
       codigo: documento.id,
+
       ...documento.data()
     }))
 
     console.log('🔥 Productos de Firebase:', lista)
 
     listaProductosGuardados.innerHTML = `
+
       <div class="producto-encontrado">
 
         <h3>
@@ -838,13 +924,16 @@ async function mostrarProductosFirebase () {
 
         <p>
           Total:
-          <strong>${lista.length}</strong>
+          <strong>
+            ${lista.length}
+          </strong>
         </p>
 
         ${lista
           .map(producto => {
             const imagenHTML = producto.imagen
               ? `
+
                   <img
                     src="${producto.imagen}"
                     alt="${producto.nombre}"
@@ -856,8 +945,10 @@ async function mostrarProductosFirebase () {
                       margin:0 auto 8px;
                     "
                   >
+
                 `
               : `
+
                   <div
                     style="
                       width:80px;
@@ -872,9 +963,11 @@ async function mostrarProductosFirebase () {
                   >
                     🖼️
                   </div>
+
                 `
 
             return `
+
               <div class="producto-pendiente">
 
                 ${imagenHTML}
@@ -891,7 +984,7 @@ async function mostrarProductosFirebase () {
                 <br>
 
                 Precio:
-                ${producto.precio}
+                ${normalizarPrecio(producto.precio)}
 
                 <br>
 
@@ -908,11 +1001,13 @@ async function mostrarProductosFirebase () {
                 </button>
 
               </div>
+
             `
           })
           .join('')}
 
       </div>
+
     `
 
     document
@@ -926,6 +1021,7 @@ async function mostrarProductosFirebase () {
     console.error('❌ Error obteniendo productos:', error)
 
     listaProductosGuardados.innerHTML = `
+
       <div class="producto-encontrado">
 
         <h3>
@@ -937,6 +1033,7 @@ async function mostrarProductosFirebase () {
         </p>
 
       </div>
+
     `
   }
 }
@@ -946,11 +1043,15 @@ async function mostrarProductosFirebase () {
 // ======================================================
 
 async function eliminarProductoFirebase (codigo) {
-  if (!comprobarModoDueno()) return
+  if (!comprobarModoDueno()) {
+    return
+  }
 
   const confirmar = confirm(`¿Querés eliminar el producto ${codigo}?`)
 
-  if (!confirmar) return
+  if (!confirmar) {
+    return
+  }
 
   try {
     await deleteDoc(doc(db, 'productos', codigo))
