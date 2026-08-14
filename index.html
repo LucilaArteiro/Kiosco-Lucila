@@ -12,7 +12,10 @@
 
     <link rel="stylesheet" href="styles.css" />
 
-    <!-- Estilo del campo precio -->
+    <!-- =========================
+         ESTILO DEL CAMPO PRECIO
+    ========================== -->
+
     <style>
       .campo-precio {
         display: flex;
@@ -161,13 +164,19 @@
           </div>
         </div>
 
-        <!-- =========================
-             SEPARADOR
-        ========================== -->
+        <!--
+        =========================
+        SEPARADOR ELIMINADO
+        =========================
+
+        Antes estaba:
 
         <div class="separador-consulta">
           <span>o</span>
         </div>
+
+        Ya no está.
+        -->
 
         <!-- =========================
              ESCANEAR
@@ -236,7 +245,9 @@
         <div id="formularioProducto" style="display: none">
           <h3>➕ Agregar producto</h3>
 
-          <!-- CÓDIGO -->
+          <!-- =========================
+               CÓDIGO
+          ========================== -->
 
           <label for="codigoProducto"> Código de barras </label>
 
@@ -252,7 +263,9 @@
             <button type="button" id="btnEscanearParaAgregar">📷</button>
           </div>
 
-          <!-- NOMBRE -->
+          <!-- =========================
+               NOMBRE
+          ========================== -->
 
           <label for="nombreProducto"> Nombre </label>
 
@@ -263,7 +276,9 @@
             autocomplete="off"
           />
 
-          <!-- PRECIO -->
+          <!-- =========================
+               PRECIO
+          ========================== -->
 
           <label for="precioProducto"> Precio </label>
 
@@ -280,7 +295,9 @@
             />
           </div>
 
-          <!-- IMAGEN -->
+          <!-- =========================
+               IMAGEN
+          ========================== -->
 
           <label for="imagenProducto">
             Imagen
@@ -295,7 +312,9 @@
             autocomplete="off"
           />
 
-          <!-- CATEGORÍA -->
+          <!-- =========================
+               CATEGORÍA
+          ========================== -->
 
           <label for="categoriaProducto"> Categoría </label>
 
@@ -313,7 +332,9 @@
             <option value="otros">Otros</option>
           </select>
 
-          <!-- GUARDAR -->
+          <!-- =========================
+               GUARDAR
+          ========================== -->
 
           <button type="button" id="btnGuardarProducto">
             💾 Guardar producto
