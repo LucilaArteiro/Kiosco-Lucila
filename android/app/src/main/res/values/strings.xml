@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kiosco Lucila</string>
+    <string name="title_activity_main">Kiosco Lucila</string>
+    <string name="package_name">com.kioscolucila.app</string>
+    <string name="custom_url_scheme">com.kioscolucila.app</string>
+</resources>

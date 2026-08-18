@@ -8,1272 +8,6 @@
 
 html {
   width: 100%;
-  scroll-behavior: smooth;
-  overflow-x: hidden;
-}
-
-body {
-  margin: 0;
-  width: 100%;
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
-  background: #f5f3f8;
-  color: #222;
-  overflow-x: hidden;
-}
-
-/* ======================================================
-   TÍTULOS
-====================================================== */
-
-h2 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  margin: 22px 0 14px;
-  color: #32165f;
-  font-size: 23px;
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  text-align: center;
-}
-
-h2::before,
-h2::after {
-  content: '';
-  width: 26px;
-  height: 2px;
-  background: linear-gradient(90deg, #7b3ff2, #c4a5ff);
-  border-radius: 10px;
-}
-
-/* ======================================================
-   HEADER
-====================================================== */
-
-header {
-  position: relative;
-  z-index: 100;
-  overflow: visible;
-  min-height: 68px;
-  padding: 22px 70px;
-  color: white;
-  text-align: center;
-  background: linear-gradient(135deg, #21113d, #5b21b6);
-  box-shadow: 0 4px 18px rgba(91, 33, 182, 0.28);
-}
-
-/* Decoraciones del header */
-
-header::before,
-header::after {
-  content: '';
-  position: absolute;
-  width: 160px;
-  height: 160px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-header::before {
-  top: -100px;
-  left: -50px;
-}
-
-header::after {
-  right: -50px;
-  bottom: -120px;
-}
-
-header h1 {
-  position: relative;
-  z-index: 2;
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-/* ======================================================
-   MENÚ ANCLADO AL HEADER
-====================================================== */
-
-/*
-   IMPORTANTE:
-
-   El menú ya NO usa position: fixed.
-
-   Está anclado al header mediante position: absolute.
-   Por lo tanto:
-   - Se mueve junto con el header.
-   - No queda flotando mientras bajás.
-   - No se separa del encabezado.
-*/
-
-.menu-fijo {
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  z-index: 500;
-}
-
-/* Botón hamburguesa */
-
-.boton-menu {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 48px;
-  height: 48px;
-
-  padding: 0;
-
-  color: #fff;
-
-  background: rgba(255, 255, 255, 0.14);
-
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 13px;
-
-  font-size: 23px;
-
-  cursor: pointer;
-
-  backdrop-filter: blur(8px);
-
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.22);
-
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.boton-menu:hover {
-  background: rgba(255, 255, 255, 0.25);
-
-  transform: scale(1.04);
-
-  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.28);
-}
-
-.boton-menu:active {
-  transform: scale(0.96);
-}
-
-/* ======================================================
-   LISTA DEL MENÚ
-====================================================== */
-
-.lista-menu {
-  display: none;
-
-  position: absolute;
-
-  top: 56px;
-  left: 0;
-
-  width: 205px;
-
-  margin: 0;
-  padding: 8px;
-
-  list-style: none;
-
-  background: linear-gradient(145deg, #32165f, #5b21b6);
-
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  border-radius: 14px;
-
-  box-shadow: 0 12px 28px rgba(38, 13, 83, 0.4);
-
-  backdrop-filter: blur(10px);
-}
-
-.lista-menu a {
-  display: block;
-
-  padding: 9px 11px;
-
-  color: #fff;
-
-  text-decoration: none;
-
-  font-size: 14px;
-  font-weight: bold;
-
-  border-radius: 9px;
-
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.lista-menu a:hover {
-  color: #fff;
-
-  background: rgba(255, 255, 255, 0.16);
-
-  transform: translateX(2px);
-}
-
-/* ======================================================
-   BUSCADOR DEL MENÚ
-====================================================== */
-
-.buscador-menu {
-  padding: 3px 0 6px;
-}
-
-.buscador-menu input {
-  width: 100%;
-
-  padding: 9px 10px;
-
-  color: #fff;
-
-  background: rgba(255, 255, 255, 0.12);
-
-  border: 1px solid rgba(255, 255, 255, 0.28);
-
-  border-radius: 9px;
-
-  outline: none;
-
-  font-size: 13px;
-
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-
-.buscador-menu input::placeholder {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.buscador-menu input:focus {
-  background: rgba(255, 255, 255, 0.18);
-
-  box-shadow: 0 0 0 3px rgba(216, 180, 254, 0.3);
-}
-
-/* ======================================================
-   BOTÓN MODO DUEÑO
-====================================================== */
-
-.boton-modo-dueno-menu {
-  width: 100%;
-
-  margin-top: 5px;
-
-  padding: 9px 11px;
-
-  color: #4c1d95;
-
-  background: #f3e8ff;
-
-  border: none;
-
-  border-radius: 9px;
-
-  font-size: 13px;
-  font-weight: bold;
-
-  text-align: left;
-
-  cursor: pointer;
-
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.boton-modo-dueno-menu:hover {
-  background: #fff;
-
-  transform: translateY(-1px);
-}
-
-/* ======================================================
-   BOTONES GENERALES
-====================================================== */
-
-.boton-escanear,
-.boton-otro-escaneo,
-#formularioProducto button,
-#btnConsultar {
-  color: #fff;
-
-  background: linear-gradient(135deg, #7b3ff2, #8b5cf6);
-
-  border: none;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.boton-escanear:hover,
-.boton-otro-escaneo:hover,
-#formularioProducto button:hover,
-#btnConsultar:hover {
-  background: linear-gradient(135deg, #6628d8, #7c3aed);
-
-  transform: translateY(-1px);
-
-  box-shadow: 0 5px 12px rgba(123, 63, 242, 0.25);
-}
-
-button {
-  font-family: inherit;
-}
-
-/* ======================================================
-   CONSULTA DE PRODUCTO
-====================================================== */
-
-.seccion-escaner {
-  display: flex;
-  justify-content: center;
-
-  width: 100%;
-
-  padding: 12px;
-}
-
-.tarjeta-escaner {
-  width: 100%;
-  max-width: 370px;
-
-  padding: 17px;
-
-  text-align: center;
-
-  background: #fff;
-
-  border-radius: 17px;
-
-  box-shadow: 0 7px 20px rgba(38, 13, 83, 0.1), 0 1px 4px rgba(0, 0, 0, 0.04);
-}
-
-/* ======================================================
-   ICONO
-====================================================== */
-
-.icono-escaner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 46px;
-  height: 46px;
-
-  margin: 0 auto 8px;
-
-  font-size: 21px;
-
-  background: #f1e8ff;
-
-  border-radius: 50%;
-
-  box-shadow: 0 3px 10px rgba(123, 63, 242, 0.1);
-}
-
-.tarjeta-escaner h2 {
-  margin: 3px 0 8px;
-
-  font-size: 21px;
-}
-
-.texto-escaner {
-  margin: 0 0 12px;
-
-  color: #777;
-
-  font-size: 13px;
-
-  line-height: 1.4;
-}
-
-/* ======================================================
-   CONSULTA MANUAL
-====================================================== */
-
-.consulta-manual {
-  width: 100%;
-
-  margin: 0 auto 10px;
-}
-
-.consulta-manual-form {
-  display: flex;
-
-  align-items: stretch;
-  justify-content: center;
-
-  gap: 6px;
-
-  width: 100%;
-}
-
-.consulta-manual input,
-#codigoConsulta {
-  flex: 1;
-
-  min-width: 0;
-
-  height: 38px;
-
-  padding: 0 10px;
-
-  color: #333;
-
-  background: #fff;
-
-  border: 1px solid #d8d2df;
-
-  border-radius: 8px;
-
-  outline: none;
-
-  font-size: 14px;
-
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.consulta-manual input:focus,
-#codigoConsulta:focus {
-  border-color: #8b5cf6;
-
-  box-shadow: 0 0 0 3px rgba(123, 63, 242, 0.1);
-}
-
-.consulta-manual input::placeholder,
-#codigoConsulta::placeholder {
-  color: #999;
-}
-
-.consulta-manual button,
-#btnConsultar {
-  flex-shrink: 0;
-
-  height: 38px;
-
-  padding: 0 13px;
-
-  color: #fff;
-
-  background: #eee;
-
-  border: none;
-
-  border-radius: 8px;
-
-  font-size: 13px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.2s ease;
-}
-
-#btnConsultar {
-  background: linear-gradient(135deg, #7b3ff2, #8b5cf6);
-}
-
-/* ======================================================
-   BOTÓN ESCANEAR
-====================================================== */
-
-.boton-escanear {
-  width: auto;
-
-  min-width: 145px;
-
-  margin: 3px auto;
-
-  padding: 10px 15px;
-
-  border-radius: 10px;
-
-  font-size: 13px;
-}
-
-/* ======================================================
-   LECTOR
-====================================================== */
-
-.lector {
-  width: 100%;
-
-  margin-top: 10px;
-}
-
-.marco-escaner {
-  position: relative;
-
-  width: 100%;
-
-  max-width: 400px;
-
-  margin: auto;
-
-  overflow: hidden;
-
-  background: #111;
-
-  border-radius: 14px;
-
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.15);
-}
-
-.marco-escaner video {
-  display: block;
-
-  width: 100%;
-
-  max-height: 55vh;
-
-  object-fit: cover;
-}
-
-.marco-escaner::before {
-  content: '';
-
-  position: absolute;
-
-  top: 27%;
-  left: 10%;
-
-  z-index: 2;
-
-  width: 80%;
-  height: 45%;
-
-  border: 2px solid #fff;
-
-  border-radius: 9px;
-
-  pointer-events: none;
-}
-
-.linea-escaner {
-  position: absolute;
-
-  top: 30%;
-  left: 12%;
-
-  z-index: 3;
-
-  width: 76%;
-  height: 2px;
-
-  background: #fff;
-
-  animation: escanear 2s infinite ease-in-out;
-
-  pointer-events: none;
-}
-
-@keyframes escanear {
-  50% {
-    top: 68%;
-  }
-}
-
-.instruccion {
-  margin: 7px 0 0;
-
-  color: #666;
-
-  font-size: 13px;
-}
-
-/* ======================================================
-   RESULTADO
-====================================================== */
-
-.resultado,
-#listaProductosGuardados {
-  margin-top: 10px;
-}
-
-.producto-encontrado {
-  width: 100%;
-
-  margin-top: 9px;
-
-  padding: 13px;
-
-  text-align: center;
-
-  background: #faf9fc;
-
-  border: 1px solid #eee8f7;
-
-  border-radius: 13px;
-}
-
-.producto-encontrado img {
-  width: 105px;
-  height: 105px;
-
-  object-fit: contain;
-
-  max-width: 100%;
-}
-
-.producto-encontrado h3 {
-  margin: 6px 0;
-
-  color: #32165f;
-
-  font-size: 17px;
-}
-
-.producto-encontrado .precio {
-  display: block;
-
-  margin-top: 4px;
-
-  color: #7b3ff2;
-
-  font-size: 24px;
-
-  font-weight: 800;
-}
-
-.producto-encontrado p {
-  margin: 5px 0;
-
-  color: #666;
-
-  font-size: 13px;
-}
-
-.boton-otro-escaneo {
-  width: 100%;
-
-  margin-top: 9px;
-
-  padding: 9px 12px;
-
-  border-radius: 9px;
-
-  font-size: 13px;
-}
-
-/* ======================================================
-   FORMULARIO PRODUCTO
-====================================================== */
-
-#formularioProducto {
-  width: 100%;
-
-  margin-top: 12px;
-
-  padding: 13px;
-
-  text-align: left;
-
-  background: #faf9fc;
-
-  border: 1px solid #eee8f7;
-
-  border-radius: 13px;
-}
-
-#formularioProducto h3 {
-  margin: 2px 0 9px;
-
-  color: #32165f;
-
-  text-align: center;
-
-  font-size: 17px;
-}
-
-#formularioProducto label {
-  display: block;
-
-  margin: 8px 0 4px;
-
-  font-size: 13px;
-
-  font-weight: bold;
-}
-
-#formularioProducto input,
-#formularioProducto select {
-  width: 100%;
-
-  height: 38px;
-
-  padding: 0 10px;
-
-  border: 1px solid #d8d2df;
-
-  border-radius: 8px;
-
-  outline: none;
-
-  font-size: 14px;
-
-  background: #fff;
-}
-
-#formularioProducto input:focus,
-#formularioProducto select:focus {
-  border-color: #7b3ff2;
-
-  box-shadow: 0 0 0 2px rgba(123, 63, 242, 0.1);
-}
-
-#formularioProducto button {
-  width: 100%;
-
-  margin-top: 9px;
-
-  padding: 10px;
-
-  border-radius: 8px;
-
-  font-size: 14px;
-}
-
-/* ======================================================
-   PRODUCTOS DEL CATÁLOGO
-====================================================== */
-
-.contenedor-productos {
-  display: grid;
-
-  grid-template-columns: repeat(4, 1fr);
-
-  gap: 16px;
-
-  padding: 12px;
-}
-
-.producto {
-  padding: 11px;
-
-  text-align: center;
-
-  background: #fff;
-
-  border: 1px solid #eee;
-
-  border-radius: 11px;
-
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.producto:hover {
-  transform: translateY(-3px);
-
-  box-shadow: 0 7px 18px rgba(38, 13, 83, 0.12);
-}
-
-.producto img {
-  width: 150px;
-  height: 170px;
-
-  object-fit: contain;
-
-  border-radius: 9px;
-
-  max-width: 100%;
-}
-
-.producto h3 {
-  margin: 9px 0 5px;
-
-  color: #32165f;
-
-  font-size: 15px;
-}
-
-.producto p {
-  margin: 0;
-
-  color: #7b3ff2;
-
-  font-size: 16px;
-
-  font-weight: bold;
-}
-
-/* ======================================================
-   LISTA DE PRODUCTOS DEL DUEÑO
-====================================================== */
-
-.producto-pendiente {
-  margin-top: 9px;
-
-  padding: 11px;
-
-  text-align: left;
-
-  background: #fff;
-
-  border: 1px solid #eee;
-
-  border-radius: 10px;
-
-  font-size: 13px;
-}
-
-.producto-pendiente img {
-  max-width: 80px;
-}
-
-/* ======================================================
-   WHATSAPP
-====================================================== */
-
-.whatsapp {
-  position: fixed;
-
-  right: 14px;
-  bottom: 14px;
-
-  z-index: 1000;
-
-  padding: 9px 12px;
-
-  color: #fff;
-
-  background: #25d366;
-
-  border-radius: 50px;
-
-  text-decoration: none;
-
-  font-size: 13px;
-
-  font-weight: bold;
-
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.whatsapp:hover {
-  transform: translateY(-2px);
-
-  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.22);
-}
-
-/* ======================================================
-   TABLET
-====================================================== */
-
-@media (max-width: 900px) {
-  .contenedor-productos {
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 11px;
-  }
-
-  .producto img {
-    width: 130px;
-    height: 150px;
-  }
-}
-
-/* ======================================================
-   CELULAR
-====================================================== */
-
-@media (max-width: 600px) {
-  /* ==================================================
-     HEADER
-  ================================================== */
-
-  header {
-    min-height: 62px;
-
-    padding: 16px 55px;
-  }
-
-  header h1 {
-    font-size: 1.3rem;
-
-    line-height: 1.2;
-  }
-
-  /* ==================================================
-     MENÚ ANCLADO AL HEADER
-  ================================================== */
-
-  .menu-fijo {
-    position: absolute;
-
-    top: 8px;
-    left: 8px;
-  }
-
-  .boton-menu {
-    width: 42px;
-    height: 42px;
-
-    border-radius: 11px;
-
-    font-size: 20px;
-  }
-
-  .lista-menu {
-    top: 48px;
-
-    width: 190px;
-  }
-
-  /* ==================================================
-     TÍTULOS
-  ================================================== */
-
-  h2 {
-    gap: 6px;
-
-    margin: 14px 0 9px;
-
-    font-size: 18px;
-  }
-
-  h2::before,
-  h2::after {
-    width: 18px;
-
-    height: 2px;
-  }
-
-  /* ==================================================
-     CONSULTA
-  ================================================== */
-
-  .seccion-escaner {
-    padding: 7px;
-  }
-
-  .tarjeta-escaner {
-    max-width: 100%;
-
-    padding: 12px;
-
-    border-radius: 14px;
-  }
-
-  .icono-escaner {
-    width: 41px;
-    height: 41px;
-
-    margin-bottom: 5px;
-
-    font-size: 19px;
-  }
-
-  .tarjeta-escaner h2 {
-    margin: 2px 0 6px;
-
-    font-size: 18px;
-  }
-
-  .texto-escaner {
-    margin-bottom: 9px;
-
-    font-size: 12px;
-  }
-
-  /* ==================================================
-     CONSULTA MANUAL
-  ================================================== */
-
-  .consulta-manual {
-    margin-bottom: 7px;
-  }
-
-  .consulta-manual-form {
-    gap: 5px;
-  }
-
-  .consulta-manual input,
-  #codigoConsulta {
-    height: 36px;
-
-    padding: 0 9px;
-
-    font-size: 13px;
-  }
-
-  .consulta-manual button,
-  #btnConsultar {
-    height: 36px;
-
-    padding: 0 11px;
-
-    font-size: 12px;
-  }
-
-  .boton-escanear {
-    min-width: 140px;
-
-    padding: 9px 13px;
-
-    font-size: 12px;
-
-    border-radius: 9px;
-  }
-
-  /* ==================================================
-     LECTOR
-  ================================================== */
-
-  .lector {
-    margin-top: 7px;
-  }
-
-  .marco-escaner {
-    border-radius: 11px;
-  }
-
-  .marco-escaner video {
-    max-height: 50vh;
-  }
-
-  .instruccion {
-    margin-top: 5px;
-
-    font-size: 12px;
-  }
-
-  /* ==================================================
-     RESULTADO
-  ================================================== */
-
-  .resultado,
-  #listaProductosGuardados {
-    margin-top: 7px;
-  }
-
-  .producto-encontrado {
-    margin-top: 7px;
-
-    padding: 10px;
-
-    border-radius: 11px;
-  }
-
-  .producto-encontrado img {
-    width: 90px;
-    height: 90px;
-  }
-
-  .producto-encontrado h3 {
-    margin: 4px 0;
-
-    font-size: 16px;
-  }
-
-  .producto-encontrado .precio {
-    font-size: 21px;
-  }
-
-  .producto-encontrado p {
-    margin: 3px 0;
-
-    font-size: 12px;
-  }
-
-  .boton-otro-escaneo {
-    margin-top: 7px;
-
-    padding: 8px;
-
-    font-size: 12px;
-  }
-
-  /* ==================================================
-     FORMULARIO
-  ================================================== */
-
-  #formularioProducto {
-    margin-top: 8px;
-
-    padding: 10px;
-
-    border-radius: 11px;
-  }
-
-  #formularioProducto h3 {
-    margin: 2px 0 7px;
-
-    font-size: 16px;
-  }
-
-  #formularioProducto label {
-    margin: 6px 0 3px;
-
-    font-size: 12px;
-  }
-
-  #formularioProducto input,
-  #formularioProducto select {
-    height: 36px;
-
-    padding: 0 9px;
-
-    font-size: 13px;
-
-    border-radius: 8px;
-  }
-
-  #formularioProducto button {
-    margin-top: 7px;
-
-    padding: 9px;
-
-    font-size: 13px;
-  }
-
-  /* ==================================================
-     PRODUCTOS
-  ================================================== */
-
-  .contenedor-productos {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
-    gap: 6px;
-
-    padding: 6px;
-  }
-
-  .producto {
-    min-width: 0;
-
-    padding: 7px;
-
-    border-radius: 8px;
-  }
-
-  .producto img {
-    width: 100%;
-
-    height: 115px;
-  }
-
-  .producto h3 {
-    margin: 6px 0 3px;
-
-    font-size: 13px;
-
-    line-height: 1.15;
-  }
-
-  .producto p {
-    font-size: 13px;
-  }
-
-  /* ==================================================
-     WHATSAPP
-  ================================================== */
-
-  .whatsapp {
-    right: 9px;
-
-    bottom: 9px;
-
-    padding: 8px 10px;
-
-    font-size: 11px;
-  }
-}
-
-/* ======================================================
-   CELULARES MUY CHICOS
-====================================================== */
-
-@media (max-width: 380px) {
-  header {
-    padding-left: 50px;
-    padding-right: 50px;
-  }
-
-  header h1 {
-    font-size: 1.18rem;
-  }
-
-  .menu-fijo {
-    top: 7px;
-    left: 7px;
-  }
-
-  .boton-menu {
-    width: 40px;
-    height: 40px;
-
-    font-size: 19px;
-  }
-
-  .lista-menu {
-    top: 46px;
-
-    width: 185px;
-  }
-
-  .tarjeta-escaner {
-    padding: 10px;
-  }
-
-  .consulta-manual-form {
-    gap: 4px;
-  }
-
-  .consulta-manual input,
-  #codigoConsulta {
-    font-size: 12px;
-  }
-
-  .consulta-manual button,
-  #btnConsultar {
-    padding-left: 9px;
-    padding-right: 9px;
-
-    font-size: 11px;
-  }
-
-  .boton-escanear {
-    font-size: 11px;
-  }
-
-  .producto-encontrado {
-    padding: 9px;
-  }
-
-  .producto-encontrado img {
-    width: 80px;
-    height: 80px;
-  }
-
-  .producto h3 {
-    font-size: 12px;
-  }
-
-  .producto img {
-    height: 105px;
-  }
-}
-/* ======================================================
-   RESET
-====================================================== */
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  width: 100%;
   min-height: 100%;
   scroll-behavior: smooth;
   overflow-x: hidden;
@@ -1283,9 +17,9 @@ body {
   margin: 0;
   width: 100%;
   min-height: 100vh;
+
   font-family: Arial, sans-serif;
 
-  /* NEGRO + MORADO */
   background: radial-gradient(
       circle at top,
       rgba(123, 63, 242, 0.1),
@@ -1294,6 +28,7 @@ body {
     #080808;
 
   color: #eeeeee;
+
   overflow-x: hidden;
 }
 
@@ -1320,7 +55,6 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #7b3ff2, #4c1d95);
-
   border-radius: 20px;
 }
 
@@ -1372,6 +106,8 @@ h2::after {
 header {
   position: relative;
 
+  min-height: 68px;
+
   overflow: hidden;
 
   padding: 24px 70px;
@@ -1391,6 +127,10 @@ header {
 
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.7), 0 4px 25px rgba(91, 33, 182, 0.22);
 }
+
+/* ======================================================
+   DECORACIONES DEL HEADER
+====================================================== */
 
 header::before,
 header::after {
@@ -1439,42 +179,6 @@ header h1 {
 }
 
 /* ======================================================
-   BOTONES GENERALES
-====================================================== */
-
-.boton-escanear,
-.boton-otro-escaneo,
-#formularioProducto button,
-#btnConsultar {
-  color: #ffffff;
-
-  background: linear-gradient(135deg, #7b3ff2, #5b21b6);
-
-  border: 1px solid rgba(168, 85, 247, 0.4);
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-
-.boton-escanear:hover,
-.boton-otro-escaneo:hover,
-#formularioProducto button:hover,
-#btnConsultar:hover {
-  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-
-  transform: translateY(-2px);
-
-  box-shadow: 0 7px 20px rgba(123, 63, 242, 0.35);
-}
-
-button {
-  font-family: inherit;
-}
-
-/* ======================================================
    MENÚ
 ====================================================== */
 
@@ -1488,8 +192,15 @@ button {
 }
 
 .boton-menu {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
   width: 48px;
   height: 48px;
+
+  padding: 0;
 
   color: #ffffff;
 
@@ -1507,7 +218,8 @@ button {
 
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(123, 63, 242, 0.15);
 
-  transition: 0.2s;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .boton-menu:hover {
@@ -1517,7 +229,11 @@ button {
 
   transform: scale(1.04);
 
-  box-shadow: 0 0 18px rgba(123, 63, 242, 0.35);
+  box-shadow: 0 0 18px rgba(123, 63, 242, 0.35), 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.boton-menu:active {
+  transform: scale(0.96);
 }
 
 /* ======================================================
@@ -1546,6 +262,8 @@ button {
   border-radius: 14px;
 
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.75), 0 0 20px rgba(123, 63, 242, 0.15);
+
+  backdrop-filter: blur(10px);
 }
 
 .lista-menu a {
@@ -1563,7 +281,8 @@ button {
 
   border-radius: 9px;
 
-  transition: 0.2s;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .lista-menu a:hover {
@@ -1572,6 +291,8 @@ button {
   background: rgba(123, 63, 242, 0.25);
 
   box-shadow: inset 3px 0 0 #8b5cf6;
+
+  transform: translateX(2px);
 }
 
 /* ======================================================
@@ -1599,7 +320,7 @@ button {
 
   font-size: 13px;
 
-  transition: 0.2s;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .buscador-menu input::placeholder {
@@ -1608,6 +329,8 @@ button {
 
 .buscador-menu input:focus {
   border-color: #8b5cf6;
+
+  background: rgba(0, 0, 0, 0.8);
 
   box-shadow: 0 0 0 3px rgba(123, 63, 242, 0.18),
     0 0 12px rgba(123, 63, 242, 0.15);
@@ -1640,13 +363,53 @@ button {
 
   cursor: pointer;
 
-  transition: 0.2s;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .boton-modo-dueno-menu:hover {
   background: linear-gradient(135deg, #7b3ff2, #4c1d95);
 
   box-shadow: 0 0 15px rgba(123, 63, 242, 0.3);
+
+  transform: translateY(-1px);
+}
+
+/* ======================================================
+   BOTONES GENERALES
+====================================================== */
+
+.boton-escanear,
+.boton-otro-escaneo,
+#formularioProducto button,
+#btnConsultar,
+#btnConsultarCodigo {
+  color: #ffffff;
+
+  background: linear-gradient(135deg, #7b3ff2, #5b21b6);
+
+  border: 1px solid rgba(168, 85, 247, 0.4);
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.boton-escanear:hover,
+.boton-otro-escaneo:hover,
+#formularioProducto button:hover,
+#btnConsultar:hover,
+#btnConsultarCodigo:hover {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 7px 20px rgba(123, 63, 242, 0.35);
+}
+
+button {
+  font-family: inherit;
 }
 
 /* ======================================================
@@ -1657,6 +420,8 @@ button {
   display: flex;
 
   justify-content: center;
+
+  width: 100%;
 
   padding: 18px 12px;
 }
@@ -1684,7 +449,7 @@ button {
 }
 
 /* ======================================================
-   ICONO
+   ICONO ESCÁNER
 ====================================================== */
 
 .icono-escaner {
@@ -1741,7 +506,6 @@ button {
   display: flex;
 
   align-items: stretch;
-
   justify-content: center;
 
   gap: 6px;
@@ -1751,9 +515,11 @@ button {
 
 .consulta-manual input,
 #codigoConsulta {
-  flex: 1;
+  flex: 1 1 auto;
 
   min-width: 0;
+
+  width: auto;
 
   height: 39px;
 
@@ -1771,7 +537,7 @@ button {
 
   font-size: 14px;
 
-  transition: 0.2s;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .consulta-manual input:focus,
@@ -1787,23 +553,63 @@ button {
   color: #777777;
 }
 
-.consulta-manual button,
-#btnConsultar {
-  flex-shrink: 0;
+/* ======================================================
+   BOTÓN CONSULTAR
+====================================================== */
 
-  height: 39px;
+#btnConsultarCodigo {
+  display: inline-flex !important;
 
-  padding: 0 14px;
+  align-items: center !important;
+  justify-content: center !important;
 
-  color: #ffffff;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
 
-  border-radius: 8px;
+  width: auto !important;
+  min-width: 90px !important;
 
-  font-size: 13px;
+  height: 39px !important;
 
-  font-weight: 700;
+  padding: 0 16px !important;
 
-  cursor: pointer;
+  color: #ffffff !important;
+
+  background: linear-gradient(135deg, #7b3ff2, #5b21b6) !important;
+
+  border: 1px solid rgba(168, 85, 247, 0.7) !important;
+
+  border-radius: 8px !important;
+
+  font-family: inherit !important;
+
+  font-size: 13px !important;
+
+  font-weight: 700 !important;
+
+  line-height: 1 !important;
+
+  cursor: pointer !important;
+
+  opacity: 1 !important;
+
+  visibility: visible !important;
+
+  box-shadow: 0 0 10px rgba(123, 63, 242, 0.25) !important;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+}
+
+#btnConsultarCodigo:hover {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important;
+
+  transform: translateY(-2px) !important;
+
+  box-shadow: 0 0 18px rgba(123, 63, 242, 0.5) !important;
+}
+
+#btnConsultarCodigo:active {
+  transform: scale(0.96);
 }
 
 /* ======================================================
@@ -1811,6 +617,8 @@ button {
 ====================================================== */
 
 .boton-escanear {
+  display: inline-block;
+
   width: auto;
 
   min-width: 150px;
@@ -1958,9 +766,9 @@ button {
   width: 110px;
   height: 110px;
 
-  object-fit: contain;
-
   max-width: 100%;
+
+  object-fit: contain;
 
   filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.7));
 }
@@ -2075,7 +883,7 @@ button {
 
   font-size: 14px;
 
-  transition: 0.2s;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 #formularioProducto input::placeholder {
@@ -2103,6 +911,75 @@ button {
 }
 
 /* ======================================================
+   CORRECCIÓN DEFINITIVA CAMPO PRECIO
+====================================================== */
+
+/*
+   IMPORTANTE:
+   Esta corrección usa #precioProducto directamente.
+   Así funciona aunque el input sea type="text",
+   type="number" o cualquier otro tipo.
+*/
+
+#precioProducto {
+  color: #111111 !important;
+
+  -webkit-text-fill-color: #111111 !important;
+
+  background-color: #ffffff !important;
+
+  opacity: 1 !important;
+
+  caret-color: #111111 !important;
+
+  font-weight: 600 !important;
+
+  color-scheme: light !important;
+}
+
+#precioProducto::placeholder {
+  color: #777777 !important;
+
+  -webkit-text-fill-color: #777777 !important;
+
+  opacity: 1 !important;
+}
+
+#precioProducto:focus {
+  color: #111111 !important;
+
+  -webkit-text-fill-color: #111111 !important;
+
+  background-color: #ffffff !important;
+
+  opacity: 1 !important;
+
+  caret-color: #111111 !important;
+
+  border-color: #7b3ff2 !important;
+
+  color-scheme: light !important;
+
+  box-shadow: 0 0 0 2px rgba(123, 63, 242, 0.2),
+    0 0 12px rgba(123, 63, 242, 0.12) !important;
+}
+
+/* ======================================================
+   COMPATIBILIDAD NAVEGADORES / AUTOFILL
+====================================================== */
+
+#precioProducto:-webkit-autofill,
+#precioProducto:-webkit-autofill:hover,
+#precioProducto:-webkit-autofill:focus,
+#precioProducto:-webkit-autofill:active {
+  -webkit-text-fill-color: #111111 !important;
+
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+
+  caret-color: #111111 !important;
+}
+
+/* ======================================================
    PRODUCTOS DEL CATÁLOGO
 ====================================================== */
 
@@ -2113,11 +990,15 @@ button {
 
   gap: 17px;
 
+  width: 100%;
+
   padding: 15px;
 }
 
 .producto {
   position: relative;
+
+  min-width: 0;
 
   padding: 12px;
 
@@ -2144,13 +1025,14 @@ button {
 
 .producto img {
   width: 150px;
+
   height: 170px;
+
+  max-width: 100%;
 
   object-fit: contain;
 
   border-radius: 9px;
-
-  max-width: 100%;
 
   filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.7));
 }
@@ -2208,7 +1090,7 @@ button {
 }
 
 /* ======================================================
-   INPUTS GENERADOS
+   INPUTS DE CÓDIGO GENERADO
 ====================================================== */
 
 #codigoGenerado,
@@ -2273,7 +1155,7 @@ button {
 
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 
-  transition: 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .whatsapp:hover {
@@ -2295,6 +1177,7 @@ button {
 
   .producto img {
     width: 130px;
+
     height: 150px;
   }
 }
@@ -2324,11 +1207,13 @@ button {
 
   .menu-fijo {
     top: 8px;
+
     left: 8px;
   }
 
   .boton-menu {
     width: 42px;
+
     height: 42px;
 
     border-radius: 11px;
@@ -2375,6 +1260,7 @@ button {
 
   .icono-escaner {
     width: 42px;
+
     height: 42px;
 
     margin-bottom: 6px;
@@ -2401,11 +1287,22 @@ button {
   }
 
   .consulta-manual-form {
-    gap: 5px;
+    display: flex !important;
+
+    align-items: stretch !important;
+
+    gap: 5px !important;
+
+    width: 100% !important;
   }
 
-  .consulta-manual input,
   #codigoConsulta {
+    flex: 1 1 auto !important;
+
+    min-width: 0 !important;
+
+    width: auto !important;
+
     height: 36px;
 
     padding: 0 9px;
@@ -2413,13 +1310,38 @@ button {
     font-size: 13px;
   }
 
-  .consulta-manual button,
-  #btnConsultar {
-    height: 36px;
+  #btnConsultarCodigo {
+    display: inline-flex !important;
 
-    padding: 0 11px;
+    align-items: center !important;
 
-    font-size: 12px;
+    justify-content: center !important;
+
+    flex: 0 0 auto !important;
+
+    width: 95px !important;
+
+    min-width: 95px !important;
+
+    height: 36px !important;
+
+    padding: 0 10px !important;
+
+    color: #ffffff !important;
+
+    background: linear-gradient(135deg, #7b3ff2, #5b21b6) !important;
+
+    border: 1px solid rgba(168, 85, 247, 0.7) !important;
+
+    border-radius: 8px !important;
+
+    font-size: 12px !important;
+
+    font-weight: 700 !important;
+
+    opacity: 1 !important;
+
+    visibility: visible !important;
   }
 
   /* BOTÓN ESCANEAR */
@@ -2471,6 +1393,7 @@ button {
 
   .producto-encontrado img {
     width: 90px;
+
     height: 90px;
   }
 
@@ -2539,6 +1462,42 @@ button {
     font-size: 13px;
   }
 
+  /*
+     CORRECCIÓN EXTRA PARA EL PRECIO EN CELULAR
+  */
+
+  #precioProducto {
+    color: #111111 !important;
+
+    -webkit-text-fill-color: #111111 !important;
+
+    background-color: #ffffff !important;
+
+    opacity: 1 !important;
+
+    caret-color: #111111 !important;
+
+    color-scheme: light !important;
+  }
+
+  #precioProducto::placeholder {
+    color: #777777 !important;
+
+    -webkit-text-fill-color: #777777 !important;
+
+    opacity: 1 !important;
+  }
+
+  #precioProducto:focus {
+    color: #111111 !important;
+
+    -webkit-text-fill-color: #111111 !important;
+
+    background-color: #ffffff !important;
+
+    caret-color: #111111 !important;
+  }
+
   /* PRODUCTOS */
 
   .contenedor-productos {
@@ -2575,7 +1534,7 @@ button {
     font-size: 13px;
   }
 
-  /* PRODUCTOS DUEÑO */
+  /* PRODUCTOS DEL DUEÑO */
 
   .producto-pendiente {
     padding: 10px;
@@ -2587,6 +1546,7 @@ button {
 
   .whatsapp {
     right: 9px;
+
     bottom: 9px;
 
     padding: 8px 10px;
@@ -2602,6 +1562,7 @@ button {
 @media (max-width: 380px) {
   header {
     padding-left: 50px;
+
     padding-right: 50px;
   }
 
@@ -2609,12 +1570,32 @@ button {
     font-size: 1.18rem;
   }
 
+  .menu-fijo {
+    top: 7px;
+
+    left: 7px;
+  }
+
+  .boton-menu {
+    width: 40px;
+
+    height: 40px;
+
+    font-size: 19px;
+  }
+
+  .lista-menu {
+    top: 46px;
+
+    width: 185px;
+  }
+
   .tarjeta-escaner {
     padding: 10px;
   }
 
   .consulta-manual-form {
-    gap: 4px;
+    gap: 4px !important;
   }
 
   .consulta-manual input,
@@ -2622,12 +1603,16 @@ button {
     font-size: 12px;
   }
 
-  .consulta-manual button,
-  #btnConsultar {
-    padding-left: 9px;
-    padding-right: 9px;
+  #btnConsultarCodigo {
+    width: 90px !important;
 
-    font-size: 11px;
+    min-width: 90px !important;
+
+    padding-left: 7px !important;
+
+    padding-right: 7px !important;
+
+    font-size: 11px !important;
   }
 
   .boton-escanear {
@@ -2640,6 +1625,7 @@ button {
 
   .producto-encontrado img {
     width: 80px;
+
     height: 80px;
   }
 
@@ -2650,151 +1636,20 @@ button {
   .producto img {
     height: 105px;
   }
-}
 
-/* ======================================================
-   CORRECCIÓN FINAL - NÚMEROS DEL CAMPO PRECIO VISIBLES
-   ====================================================== */
+  /*
+     PRECIO - CELULARES MUY CHICOS
+  */
 
-/* El formulario usa fondo oscuro, pero el navegador puede
-   aplicar estilos propios al input de precio. Estas reglas
-   fuerzan que los números escritos se vean correctamente. */
-#formularioProducto input[type='number'] {
-  color: #111111 !important;
-  -webkit-text-fill-color: #111111 !important;
-  background: #ffffff !important;
-  caret-color: #111111 !important;
-  opacity: 1 !important;
-}
+  #precioProducto {
+    color: #111111 !important;
 
-#formularioProducto input[type='number']::placeholder {
-  color: #777777 !important;
-  -webkit-text-fill-color: #777777 !important;
-  opacity: 1 !important;
-}
+    -webkit-text-fill-color: #111111 !important;
 
-#formularioProducto input[type='number']:focus {
-  color: #111111 !important;
-  -webkit-text-fill-color: #111111 !important;
-  background: #ffffff !important;
-  caret-color: #111111 !important;
-}
+    background-color: #ffffff !important;
 
-/* Evita que Chrome/Samsung oculte el texto del input */
-#formularioProducto input[type='number']:-webkit-autofill,
-#formularioProducto input[type='number']:-webkit-autofill:hover,
-#formularioProducto input[type='number']:-webkit-autofill:focus {
-  -webkit-text-fill-color: #111111 !important;
-  box-shadow: 0 0 0 1000px #ffffff inset !important;
-}
-/* ======================================================
-   CORRECCIÓN BOTÓN CONSULTAR
-   ====================================================== */
-
-#btnConsultarCodigo {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  flex-shrink: 0 !important;
-
-  width: auto !important;
-  min-width: 90px !important;
-  height: 39px !important;
-
-  padding: 0 16px !important;
-
-  color: #ffffff !important;
-
-  background: linear-gradient(135deg, #7b3ff2, #5b21b6) !important;
-
-  border: 1px solid rgba(168, 85, 247, 0.7) !important;
-  border-radius: 8px !important;
-
-  font-family: inherit !important;
-  font-size: 13px !important;
-  font-weight: 700 !important;
-
-  line-height: 1 !important;
-
-  cursor: pointer !important;
-
-  opacity: 1 !important;
-  visibility: visible !important;
-
-  box-shadow: 0 0 10px rgba(123, 63, 242, 0.25) !important;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
-}
-
-#btnConsultarCodigo:hover {
-  background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important;
-
-  transform: translateY(-2px) !important;
-
-  box-shadow: 0 0 18px rgba(123, 63, 242, 0.5) !important;
-}
-
-#btnConsultarCodigo:active {
-  transform: scale(0.96) !important;
-}
-
-/* ======================================================
-   CONSULTA EN CELULAR
-   ====================================================== */
-
-@media (max-width: 600px) {
-  .consulta-manual-form {
-    display: flex !important;
-    align-items: stretch !important;
-    gap: 5px !important;
-    width: 100% !important;
-  }
-
-  #codigoConsulta {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    width: auto !important;
-  }
-
-  #btnConsultarCodigo {
-    display: inline-flex !important;
-
-    flex: 0 0 auto !important;
-
-    width: 95px !important;
-    min-width: 95px !important;
-
-    height: 36px !important;
-
-    padding: 0 10px !important;
-
-    color: #ffffff !important;
-    background: linear-gradient(135deg, #7b3ff2, #5b21b6) !important;
-
-    border: 1px solid rgba(168, 85, 247, 0.7) !important;
-    border-radius: 8px !important;
-
-    font-size: 12px !important;
-    font-weight: 700 !important;
+    caret-color: #111111 !important;
 
     opacity: 1 !important;
-    visibility: visible !important;
-  }
-}
-
-/* ======================================================
-   CELULARES MUY CHICOS
-   ====================================================== */
-
-@media (max-width: 380px) {
-  #btnConsultarCodigo {
-    width: 90px !important;
-    min-width: 90px !important;
-
-    padding-left: 7px !important;
-    padding-right: 7px !important;
-
-    font-size: 11px !important;
   }
 }

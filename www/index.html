@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+
+    <title>Kiosco Lucila</title>
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- =========================
+         ESTILO DEL CAMPO PRECIO
+    ========================== -->
+
+    <style>
+      .campo-precio {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 38px;
+        background: #fff;
+        border: 1px solid #d8d2df;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: 0.2s ease;
+      }
+
+      .campo-precio:focus-within {
+        border-color: #7b3ff2;
+        box-shadow: 0 0 0 3px rgba(123, 63, 242, 0.12);
+      }
+
+      .campo-precio .simbolo-peso {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding-left: 11px;
+        color: #7b3ff2;
+        font-size: 16px;
+        font-weight: 800;
+        user-select: none;
+      }
+
+      .campo-precio input {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        padding: 0 10px 0 5px !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+      }
+
+      @media (max-width: 600px) {
+        .campo-precio {
+          height: 36px;
+        }
+
+        .campo-precio .simbolo-peso {
+          padding-left: 10px;
+          font-size: 15px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- =========================
+         ENCABEZADO
+    ========================== -->
+
+    <header>
+      <h1>Kiosco Lucila</h1>
+    </header>
+
+    <!-- =========================
+         MENÚ
+    ========================== -->
+
+    <nav class="menu-fijo">
+      <button class="boton-menu" type="button" aria-label="Abrir menú">
+        ☰
+      </button>
+
+      <ul class="lista-menu">
+        <li class="buscador-menu">
+          <input
+            type="search"
+            id="buscadorProductos"
+            placeholder="🔎 Buscar producto..."
+            autocomplete="off"
+          />
+        </li>
+
+        <li>
+          <a href="#comidas">Comidas</a>
+        </li>
+
+        <li>
+          <a href="#bebidas">Bebidas</a>
+        </li>
+
+        <li>
+          <a href="#limpieza">Limpieza</a>
+        </li>
+
+        <li>
+          <a href="#dulces">Dulces</a>
+        </li>
+
+        <li>
+          <a href="#otros">Otros</a>
+        </li>
+
+        <li>
+          <button id="btnModoDueno" class="boton-modo-dueno-menu" type="button">
+            🔐 Modo dueño
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- =========================
+         CONSULTAR PRODUCTO
+    ========================== -->
+
+    <section class="seccion-escaner">
+      <div class="tarjeta-escaner">
+        <div class="icono-escaner">🛒</div>
+
+        <h2>Consultar precio</h2>
+
+        <p class="texto-escaner">Escaneá el código o ingresalo manualmente.</p>
+
+        <!-- =========================
+             CONSULTA MANUAL
+        ========================== -->
+
+        <div class="consulta-manual">
+          <div class="campo-codigo">
+            <input
+              type="text"
+              id="codigoConsulta"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="off"
+              placeholder="Código de barras"
+              aria-label="Código de barras"
+            />
+
+            <button
+              id="btnConsultarCodigo"
+              type="button"
+              class="boton-consultar"
+            >
+              Consultar
+            </button>
+          </div>
+        </div>
+
+        <!--
+        =========================
+        SEPARADOR ELIMINADO
+        =========================
+
+        Antes estaba:
+
+        <div class="separador-consulta">
+          <span>o</span>
+        </div>
+
+        Ya no está.
+        -->
+
+        <!-- =========================
+             ESCANEAR
+        ========================== -->
+
+        <button id="btnEscanear" class="boton-escanear" type="button">
+          📷 Escanear código
+        </button>
+
+        <!-- =========================
+             LECTOR
+        ========================== -->
+
+        <div id="lector" class="lector" style="display: none">
+          <div class="marco-escaner">
+            <video id="video" autoplay playsinline></video>
+
+            <div class="linea-escaner"></div>
+          </div>
+
+          <p class="instruccion">Apuntá al código de barras</p>
+        </div>
+
+        <!-- =========================
+             RESULTADO
+        ========================== -->
+
+        <div id="resultado" class="resultado"></div>
+      </div>
+    </section>
+
+    <!-- =========================
+         MODO DUEÑO
+    ========================== -->
+
+    <section id="panelDueno" class="seccion-escaner" style="display: none">
+      <div class="tarjeta-escaner">
+        <div class="icono-escaner">🔐</div>
+
+        <h2>Modo dueño</h2>
+
+        <p class="texto-escaner">Administrá los productos del kiosco.</p>
+
+        <!-- =========================
+             BOTONES ADMINISTRACIÓN
+        ========================== -->
+
+        <button id="btnAgregarProducto" class="boton-escanear" type="button">
+          ➕ Agregar producto
+        </button>
+
+        <button id="btnVerProductos" class="boton-escanear" type="button">
+          📦 Ver productos
+        </button>
+
+        <!-- =========================
+             LISTA PRODUCTOS
+        ========================== -->
+
+        <div id="listaProductosGuardados"></div>
+
+        <!-- =========================
+             FORMULARIO
+        ========================== -->
+
+        <div id="formularioProducto" style="display: none">
+          <h3>➕ Agregar producto</h3>
+
+          <!-- =========================
+               CÓDIGO
+          ========================== -->
+
+          <label for="codigoProducto"> Código de barras </label>
+
+          <div class="campo-codigo-dueno">
+            <input
+              type="text"
+              id="codigoProducto"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="Ingresá el código"
+            />
+
+            <button type="button" id="btnEscanearParaAgregar">📷</button>
+          </div>
+
+          <!-- =========================
+               NOMBRE
+          ========================== -->
+
+          <label for="nombreProducto"> Nombre </label>
+
+          <input
+            type="text"
+            id="nombreProducto"
+            placeholder="Ej: Coca Cola 500 ml"
+            autocomplete="off"
+          />
+
+          <!-- =========================
+               PRECIO
+          ========================== -->
+
+          <label for="precioProducto"> Precio </label>
+
+          <div class="campo-precio">
+            <span class="simbolo-peso"> $ </span>
+
+            <input
+              type="text"
+              id="precioProducto"
+              inputmode="decimal"
+              autocomplete="off"
+              placeholder="1500"
+              aria-label="Precio"
+            />
+          </div>
+
+          <!-- =========================
+               IMAGEN
+          ========================== -->
+
+          <label for="imagenProducto">
+            Imagen
+
+            <span> (opcional) </span>
+          </label>
+
+          <input
+            type="text"
+            id="imagenProducto"
+            placeholder="Ej: coca-cola.webp"
+            autocomplete="off"
+          />
+
+          <!-- =========================
+               CATEGORÍA
+          ========================== -->
+
+          <label for="categoriaProducto"> Categoría </label>
+
+          <select id="categoriaProducto">
+            <option value="">Seleccionar categoría</option>
+
+            <option value="comidas">Comidas</option>
+
+            <option value="bebidas">Bebidas</option>
+
+            <option value="limpieza">Limpieza</option>
+
+            <option value="dulces">Dulces</option>
+
+            <option value="otros">Otros</option>
+          </select>
+
+          <!-- =========================
+               GUARDAR
+          ========================== -->
+
+          <button type="button" id="btnGuardarProducto">
+            💾 Guardar producto
+          </button>
+        </div>
+
+        <!-- =========================
+             CERRAR MODO DUEÑO
+        ========================== -->
+
+        <button id="btnCerrarModoDueno" class="boton-escanear" type="button">
+          🔒 Cerrar modo dueño
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================
+         CATÁLOGO
+    ========================== -->
+
+    <main>
+      <!-- =========================
+           COMIDAS
+      ========================== -->
+
+      <section id="comidas">
+        <h2>Comidas</h2>
+
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img
+              src="imagenes/Ravioles-La-Morocha.webp"
+              alt="Ravioles la Morocha"
+              loading="lazy"
+            />
+
+            <h3>Ravioles la Morocha</h3>
+
+            <p>$2400</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/exquisita-chocolate.webp"
+              alt="Exquisita Chocolate"
+              loading="lazy"
+            />
+
+            <h3>Exquisita Chocolate</h3>
+
+            <p>$4000</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/pure-de-tomate-grande.webp"
+              alt="Puré de tomate grande"
+              loading="lazy"
+            />
+
+            <h3>Puré de tomate grande</h3>
+
+            <p>$1200</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/pure-de-tomate-chico.webp"
+              alt="Puré de tomate chico"
+              loading="lazy"
+            />
+
+            <h3>Puré de tomate chico</h3>
+
+            <p>$700</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/exquisita-vainilla.webp"
+              alt="Exquisita Vainilla"
+              loading="lazy"
+            />
+
+            <h3>Exquisita Vainilla</h3>
+
+            <p>$4000</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/lata-jardinera.webp"
+              alt="Lata de Jardinera"
+              loading="lazy"
+            />
+
+            <h3>Lata Jardinera</h3>
+
+            <p>$1300</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/lata-lentejas.webp"
+              alt="Lata de Lentejas"
+              loading="lazy"
+            />
+
+            <h3>Lata Lentejas</h3>
+
+            <p>$1300</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/Tomate-Triturado.webp"
+              alt="Tomate Triturado"
+              loading="lazy"
+            />
+
+            <h3>Tomate Triturado</h3>
+
+            <p>$1900</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           BEBIDAS
+      ========================== -->
+
+      <section id="bebidas">
+        <h2>Bebidas</h2>
+
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img
+              src="imagenes/Vino-Elementos.webp"
+              alt="Vino Elementos"
+              loading="lazy"
+            />
+
+            <h3>Vino Elementos</h3>
+
+            <p>$5500</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/cappuccino.webp"
+              alt="Cappuccino"
+              loading="lazy"
+            />
+
+            <h3>Cappuccino</h3>
+
+            <p>$3500</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/ilolay-descremada.webp"
+              alt="Ilolay Descremada"
+              loading="lazy"
+            />
+
+            <h3>Ilolay Descremada</h3>
+
+            <p>$2200</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/ilolay-entera.webp"
+              alt="Ilolay Entera"
+              loading="lazy"
+            />
+
+            <h3>Ilolay Entera</h3>
+
+            <p>$2200</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/Vino-Benjamin.webp"
+              alt="Vino Benjamín"
+              loading="lazy"
+            />
+
+            <h3>Vino Benjamín</h3>
+
+            <p>$5500</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/cafe-arlistan.webp"
+              alt="Café Arlistán"
+              loading="lazy"
+            />
+
+            <h3>Café Arlistán</h3>
+
+            <p>$3500</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/cafe-la-virginia.webp"
+              alt="Café La Virginia"
+              loading="lazy"
+            />
+
+            <h3>Café La Virginia</h3>
+
+            <p>$3500</p>
+          </div>
+
+          <div class="producto">
+            <img src="imagenes/nesquik.webp" alt="Nesquik" loading="lazy" />
+
+            <h3>Nesquik</h3>
+
+            <p>$2222</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/Vino-Circus.webp"
+              alt="Vino Circus"
+              loading="lazy"
+            />
+
+            <h3>Vino Circus</h3>
+
+            <p>$1200</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           LIMPIEZA
+      ========================== -->
+
+      <section id="limpieza">
+        <h2>Limpieza</h2>
+
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img
+              src="https://via.placeholder.com/150"
+              alt="Lavandina"
+              loading="lazy"
+            />
+
+            <h3>Lavandina</h3>
+
+            <p>$900</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           DULCES
+      ========================== -->
+
+      <section id="dulces">
+        <h2>Dulces</h2>
+
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img
+              src="imagenes/baño-de-reposteria.webp"
+              alt="Baño de repostería"
+              loading="lazy"
+            />
+
+            <h3>Baño de repostería</h3>
+
+            <p>$500</p>
+          </div>
+
+          <div class="producto">
+            <img
+              src="imagenes/Flan-De-Vainilla.webp"
+              alt="Flan de Vainilla"
+              loading="lazy"
+            />
+
+            <h3>Flan de Vainilla</h3>
+
+            <p>$500</p>
+          </div>
+
+          <div class="producto">
+            <img src="imagenes/Gelatina.webp" alt="Gelatina" loading="lazy" />
+
+            <h3>Gelatina</h3>
+
+            <p>$700</p>
+          </div>
+
+          <div class="producto">
+            <img src="otro-dulce2.jpg" alt="Otro dulce" loading="lazy" />
+
+            <h3>Otro dulce</h3>
+
+            <p>$800</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           OTROS
+      ========================== -->
+
+      <section id="otros">
+        <h2>Otros</h2>
+
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img
+              src="https://via.placeholder.com/150"
+              alt="Velas"
+              loading="lazy"
+            />
+
+            <h3>Velas</h3>
+
+            <p>$500</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =========================
+         WHATSAPP
+    ========================== -->
+
+    <a
+      href="https://wa.me/549XXXXXXXXXX"
+      class="whatsapp"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+    >
+      WhatsApp
+    </a>
+
+    <!-- =========================
+         ZXING
+    ========================== -->
+
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
