@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Kiosco Lucila - Bebidas, comidas, dulces, productos de limpieza y mucho más. Hacé tu pedido online y retiralo en el kiosco."
+    />
+
+    <title>Kiosco Lucila | Todo lo que necesitás</title>
+
+    <!-- =====================================================
+         FUENTES
+    ====================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- =====================================================
+         ENCABEZADO
+    ====================================================== -->
+
+    <header class="encabezado">
+      <div class="contenedor encabezado-contenido">
+        <!-- Logo -->
+
+        <a href="#inicio" class="logo">
+          <span class="logo-icono"> KL </span>
+
+          <span class="logo-texto">
+            <strong>Kiosco</strong>
+            <span>Lucila</span>
+          </span>
+        </a>
+
+        <!-- Navegación -->
+
+        <nav class="navegacion" id="navegacion">
+          <a href="#inicio"> Inicio </a>
+
+          <a href="#categorias"> Categorías </a>
+
+          <a href="#productos"> Productos </a>
+
+          <a href="#contacto"> Contacto </a>
+        </nav>
+
+        <!-- Acciones -->
+
+        <div class="acciones-encabezado">
+          <button
+            class="boton-carrito"
+            id="botonCarrito"
+            aria-label="Abrir carrito"
+          >
+            🛒
+
+            <span id="contadorCarrito"> 0 </span>
+          </button>
+
+          <button class="boton-menu" id="botonMenu" aria-label="Abrir menú">
+            ☰
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+
+    <main>
+      <!-- =================================================
+             HERO
+        ================================================== -->
+
+      <section class="hero" id="inicio">
+        <div class="contenedor hero-contenido">
+          <div class="hero-texto">
+            <span class="hero-etiqueta"> KIOSCO LUCILA </span>
+
+            <h1>
+              Todo lo que necesitás,
+              <span>en un solo lugar.</span>
+            </h1>
+
+            <p>
+              Encontrá bebidas, comidas, dulces, productos de limpieza y mucho
+              más.
+            </p>
+
+            <p class="hero-retiro">
+              📦 Hacé tu pedido online y
+              <strong>retiralo en el kiosco.</strong>
+            </p>
+
+            <div class="hero-botones">
+              <a href="#productos" class="boton boton-principal">
+                Ver productos
+              </a>
+
+              <a href="#categorias" class="boton boton-secundario">
+                Explorar categorías
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-decoracion">
+            <div class="hero-circulo">
+              <span> KL </span>
+            </div>
+
+            <div class="hero-destello">✦</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================
+             CATEGORÍAS
+        ================================================== -->
+
+      <section class="seccion categorias" id="categorias">
+        <div class="contenedor">
+          <div class="titulo-seccion">
+            <span> CATEGORÍAS </span>
+
+            <h2>Encontrá lo que buscás</h2>
+
+            <p>Explorá nuestros productos por categoría.</p>
+          </div>
+
+          <div class="categorias-grid">
+            <!-- BEBIDAS -->
+
+            <button class="categoria-card" data-categoria="bebidas">
+              <div class="categoria-icono">🥤</div>
+
+              <h3>Bebidas</h3>
+
+              <span> Ver productos </span>
+            </button>
+
+            <!-- COMIDAS -->
+
+            <button class="categoria-card" data-categoria="comidas">
+              <div class="categoria-icono">🍔</div>
+
+              <h3>Comidas</h3>
+
+              <span> Ver productos </span>
+            </button>
+
+            <!-- DULCES -->
+
+            <button class="categoria-card" data-categoria="dulces">
+              <div class="categoria-icono">🍫</div>
+
+              <h3>Dulces</h3>
+
+              <span> Ver productos </span>
+            </button>
+
+            <!-- LIMPIEZA -->
+
+            <button class="categoria-card" data-categoria="limpieza">
+              <div class="categoria-icono">🧼</div>
+
+              <h3>Limpieza</h3>
+
+              <span> Ver productos </span>
+            </button>
+
+            <!-- OTROS -->
+
+            <button class="categoria-card" data-categoria="otros">
+              <div class="categoria-icono">📦</div>
+
+              <h3>Otros</h3>
+
+              <span> Ver productos </span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================
+             PRODUCTOS
+        ================================================== -->
+
+      <section class="seccion productos" id="productos">
+        <div class="contenedor">
+          <div class="titulo-seccion">
+            <span> NUESTROS PRODUCTOS </span>
+
+            <h2>Productos destacados</h2>
+
+            <p>Elegí tus productos y agregalos a tu carrito.</p>
+          </div>
+
+          <!-- BUSCADOR Y FILTRO -->
+
+          <div class="buscador-contenedor">
+            <div class="buscador">
+              <span> 🔎 </span>
+
+              <input
+                type="search"
+                id="buscadorProductos"
+                placeholder="Buscar productos..."
+                autocomplete="off"
+              />
+            </div>
+
+            <select id="filtroCategoria" class="filtro-categoria">
+              <option value="todas">Todas las categorías</option>
+
+              <option value="bebidas">Bebidas</option>
+
+              <option value="comidas">Comidas</option>
+
+              <option value="dulces">Dulces</option>
+
+              <option value="limpieza">Limpieza</option>
+
+              <option value="otros">Otros</option>
+            </select>
+          </div>
+
+          <!-- LISTA DE PRODUCTOS -->
+
+          <div class="productos-grid" id="listaProductos">
+            <!--
+                        Los productos se cargarán
+                        posteriormente con JavaScript.
+                    -->
+          </div>
+
+          <!-- SIN PRODUCTOS -->
+
+          <div class="mensaje-sin-productos" id="mensajeSinProductos" hidden>
+            <span> 🔎 </span>
+
+            <h3>No encontramos productos</h3>
+
+            <p>Probá con otra búsqueda o categoría.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================
+             PEDIDOS
+        ================================================== -->
+
+      <section class="seccion promocion">
+        <div class="contenedor">
+          <div class="promocion-contenido">
+            <div>
+              <span class="promocion-etiqueta"> PEDIDOS </span>
+
+              <h2>Hacé tu pedido online</h2>
+
+              <p>
+                Elegí tus productos, armá tu carrito y enviá el pedido por
+                WhatsApp. Luego pasá a retirarlo por
+                <strong>Kiosco Lucila</strong>.
+              </p>
+            </div>
+
+            <a href="#productos" class="boton boton-dorado"> Hacer pedido </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================
+             INFORMACIÓN
+        ================================================== -->
+
+      <section class="seccion informacion">
+        <div class="contenedor informacion-grid">
+          <!-- HORARIOS -->
+
+          <div class="informacion-card">
+            <div class="informacion-icono">🕐</div>
+
+            <div>
+              <span> HORARIOS </span>
+
+              <h3>Estamos para vos</h3>
+
+              <p>08:30 a 14:30</p>
+
+              <p>17:00 a 22:30</p>
+            </div>
+          </div>
+
+          <!-- UBICACIÓN -->
+
+          <div class="informacion-card">
+            <div class="informacion-icono">📍</div>
+
+            <div>
+              <span> UBICACIÓN </span>
+
+              <h3>Vení a retirarlo</h3>
+
+              <p>Ciudadela 1847</p>
+            </div>
+          </div>
+
+          <!-- PEDIDOS -->
+
+          <div class="informacion-card">
+            <div class="informacion-icono">📱</div>
+
+            <div>
+              <span> PEDIDOS </span>
+
+              <h3>Pedí por WhatsApp</h3>
+
+              <p>Hacé tu pedido online y retiralo en el kiosco.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================
+             CONTACTO
+        ================================================== -->
+
+      <section class="seccion contacto" id="contacto">
+        <div class="contenedor">
+          <div class="contacto-contenido">
+            <span> KIOSCO LUCILA </span>
+
+            <h2>Hacé tu pedido y retiralo en el kiosco.</h2>
+
+            <p>
+              Elegí lo que necesitás, enviá tu pedido por WhatsApp y pasá a
+              retirarlo por
+              <strong>Ciudadela 1847</strong>.
+            </p>
+
+            <div class="contacto-botones">
+              <a
+                href="#"
+                class="boton boton-dorado"
+                id="botonWhatsapp"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                📱 Pedir por WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =====================================================
+         CARRITO
+    ====================================================== -->
+
+    <aside class="carrito" id="carrito" aria-hidden="true">
+      <div class="carrito-encabezado">
+        <h2>Tu carrito</h2>
+
+        <button
+          id="cerrarCarrito"
+          class="boton-cerrar"
+          aria-label="Cerrar carrito"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="carrito-productos" id="carritoProductos">
+        <div class="carrito-vacio">
+          <span> 🛒 </span>
+
+          <h3>Tu carrito está vacío</h3>
+
+          <p>Agregá productos para comenzar.</p>
+        </div>
+      </div>
+
+      <div class="carrito-pie">
+        <div class="carrito-total">
+          <span> Total </span>
+
+          <strong id="totalCarrito"> $0 </strong>
+        </div>
+
+        <p class="carrito-retiro">
+          📦 Los pedidos se retiran en
+          <strong>Ciudadela 1847</strong>.
+        </p>
+
+        <button
+          class="boton boton-principal boton-completo"
+          id="botonFinalizarPedido"
+        >
+          Finalizar pedido
+        </button>
+      </div>
+    </aside>
+
+    <!-- =====================================================
+         FONDO DEL CARRITO
+    ====================================================== -->
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- =====================================================
+         BOTÓN FLOTANTE WHATSAPP
+    ====================================================== -->
+
+    <a
+      href="#"
+      class="whatsapp-flotante"
+      id="whatsappFlotante"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+    >
+      💬
+    </a>
+
+    <!-- =====================================================
+         PIE DE PÁGINA
+    ====================================================== -->
+
+    <footer class="pie-pagina">
+      <div class="contenedor pie-contenido">
+        <!-- LOGO -->
+
+        <div class="pie-logo">
+          <span class="logo-icono"> KL </span>
+
+          <div>
+            <strong> Kiosco Lucila </strong>
+
+            <p>Todo lo que necesitás, en un solo lugar.</p>
+          </div>
+        </div>
+
+        <!-- ENLACES -->
+
+        <div class="pie-links">
+          <a href="#inicio"> Inicio </a>
+
+          <a href="#categorias"> Categorías </a>
+
+          <a href="#productos"> Productos </a>
+
+          <a href="#contacto"> Contacto </a>
+        </div>
+
+        <!-- INFORMACIÓN -->
+
+        <div class="pie-informacion">
+          <p>📍 Ciudadela 1847</p>
+
+          <p>🕐 08:30 a 14:30 · 17:00 a 22:30</p>
+
+          <p>📦 Pedidos para retirar en el kiosco</p>
+        </div>
+
+        <!-- COPYRIGHT -->
+
+        <div class="pie-copy">
+          <p>© 2026 Kiosco Lucila. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="script.js"></script>
+  </body>
+</html>
